@@ -2,8 +2,8 @@
 const nextConfig = {
   output: 'export',
   trailingSlash: true,
-  basePath: process.env.NODE_ENV === 'production' ? '/gly-engine-lua-ide' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/gly-engine-lua-ide/' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/lua-ide' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/lua-ide/' : '',
   eslint: {
     ignoreDuringBuilds: true,
   },
