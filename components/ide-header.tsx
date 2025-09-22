@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu } from "lucide-react"
+import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle } from "lucide-react"
 import { useState } from "react"
 import { MobileMenu } from "./mobile-menu"
 import { EnhancedSaveDialog } from "./enhanced-save-dialog"
@@ -19,6 +19,8 @@ interface IDEHeaderProps {
   code: string
   onCodeChange: (code: string) => void
   onRunCode: () => void
+  onStopCode: () => void
+  isRunning: boolean
   onUndo?: () => void
   onRedo?: () => void
   canUndo?: boolean
@@ -30,6 +32,8 @@ export function IDEHeader({
   code,
   onCodeChange,
   onRunCode,
+  onStopCode,
+  isRunning,
   onUndo,
   onRedo,
   canUndo = false,
@@ -119,10 +123,17 @@ print("Olá, mundo!")
 
           {/* Desktop Toolbar */}
           <div className="hidden md:flex items-center gap-2">
-            <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={onRunCode}>
-              <Play className="w-4 h-4 mr-2" />
-              {t("run")}
-            </Button>
+            {isRunning ? (
+              <Button size="sm" variant="destructive" onClick={onStopCode}>
+                <StopCircle className="w-4 h-4 mr-2" />
+                {t("stop")}
+              </Button>
+            ) : (
+              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={onRunCode}>
+                <Play className="w-4 h-4 mr-2" />
+                {t("run")}
+              </Button>
+            )}
             <Button size="sm" variant="outline" onClick={() => setIsShareDialogOpen(true)}>
               <Share2 className="w-4 h-4 mr-2" />
               {t("share")}
@@ -153,10 +164,17 @@ print("Olá, mundo!")
           </div>
 
           <div className="flex md:hidden items-center gap-1">
-            <Button size="sm" className="bg-primary hover:bg-primary/90 px-2" onClick={onRunCode}>
-              <Play className="w-4 h-4 mr-1" />
-              {t("run")}
-            </Button>
+            {isRunning ? (
+              <Button size="sm" variant="destructive" onClick={onStopCode}>
+                <StopCircle className="w-4 h-4 mr-1" />
+                {t("stop")}
+              </Button>
+            ) : (
+              <Button size="sm" className="bg-primary hover:bg-primary/90 px-2" onClick={onRunCode}>
+                <Play className="w-4 h-4 mr-1" />
+                {t("run")}
+              </Button>
+            )}
             <Button
               size="sm"
               variant="outline"

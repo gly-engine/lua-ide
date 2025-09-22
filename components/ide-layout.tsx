@@ -6,7 +6,7 @@ import { OutputConsole } from "./output-console"
 import { IDEHeader } from "./ide-header"
 import { HistoryManager } from "@/lib/history-manager"
 import { FileManager } from "@/lib/file-manager"
-import { luaInterpreter } from "@/lib/lua-interpreter"
+import { wasmoonInterpreter } from "@/lib/wasmoon-interpreter"
 import { useToast } from "@/hooks/use-toast"
 import { useMobile } from "@/hooks/use-mobile"
 import { useTheme } from "./theme-provider"
@@ -14,6 +14,7 @@ import { useTheme } from "./theme-provider"
 export function IDELayout() {
   const [code, setCode] = useState("")
   const [isConsoleCollapsed, setIsConsoleCollapsed] = useState(false)
+  const [isRunning, setIsRunning] = useState(false)
   const historyManagerRef = useRef<HistoryManager>(new HistoryManager())
   const { settings, updateSettings } = useTheme()
   const { toast } = useToast()
@@ -90,15 +91,23 @@ print(saudacao("Desenvolvedor"))
       setIsConsoleCollapsed(false)
     }
 
+    setIsRunning(true)
     try {
-      await luaInterpreter.executeCode(code)
+      await wasmoonInterpreter.executeCode(code)
     } catch (error) {
       toast({
         title: "Erro na execução",
         description: "Erro inesperado ao executar o código",
         variant: "destructive",
       })
+    } finally {
+      setIsRunning(false)
     }
+  }
+
+  const handleStopCode = () => {
+    wasmoonInterpreter.destroy()
+    setIsRunning(false)
   }
 
   const handleUndo = () => {
@@ -134,6 +143,8 @@ print(saudacao("Desenvolvedor"))
         code={code}
         onCodeChange={handleCodeLoad}
         onRunCode={handleRunCode}
+        onStopCode={handleStopCode}
+        isRunning={isRunning}
         onUndo={handleUndo}
         onRedo={handleRedo}
         canUndo={historyManagerRef.current.canUndo()}

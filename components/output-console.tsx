@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Terminal, Trash2, ChevronUp, ChevronDown } from "lucide-react"
-import { luaInterpreter } from "@/lib/lua-interpreter"
+import { wasmoonInterpreter } from "@/lib/wasmoon-interpreter"
 import { useMobile } from "@/hooks/use-mobile"
 import { useTranslation } from "@/lib/i18n"
 import { useTheme } from "./theme-provider"
@@ -42,6 +42,7 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
   const [isWaitingForInput, setIsWaitingForInput] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputResolveRef = useRef<((value: string) => void) | null>(null)
+  const lastCheckedCodeRef = useRef<string | null>(null)
   const isMobile = useMobile()
 
   const addOutput = (content: string, type: "output" | "error" | "input" | "system" = "output") => {
@@ -50,13 +51,11 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
 
   // Initialize Lua interpreter
   useEffect(() => {
-    luaInterpreter.initialize()
-
-    luaInterpreter.setOutputCallback((output, type) => {
+    wasmoonInterpreter.setOutputCallback((output, type) => {
       addOutput(output, type)
     })
 
-    luaInterpreter.setInputCallback(() => {
+    wasmoonInterpreter.setInputCallback(() => {
       return new Promise<string>((resolve) => {
         setIsInputEnabled(true)
         setIsWaitingForInput(true)
@@ -67,11 +66,12 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
 
   // Check if current code has io.read() and enable input accordingly
   useEffect(() => {
-    if (currentCode) {
-      const hasIoRead = luaInterpreter.hasIoRead(currentCode)
+    if (currentCode && currentCode !== lastCheckedCodeRef.current) {
+      const hasIoRead = wasmoonInterpreter.hasIoRead(currentCode)
       if (hasIoRead && !isWaitingForInput) {
         addOutput(t("useIoRead"), "system")
       }
+      lastCheckedCodeRef.current = currentCode
     }
   }, [currentCode, isWaitingForInput, t])
 
@@ -109,7 +109,7 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
     addOutput("Executando código...", "system")
 
     try {
-      const result = await luaInterpreter.executeCode(currentCode)
+      const result = await wasmoonInterpreter.executeCode(currentCode)
       if (!result.success && result.error) {
         addOutput(`Erro: ${result.error}`, "error")
       }
