@@ -147,6 +147,7 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                   <SelectContent>
                     <SelectItem value="pt">{t("portuguese")}</SelectItem>
                     <SelectItem value="en">{t("english")}</SelectItem>
+                    <SelectItem value="es">{t("spanish")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

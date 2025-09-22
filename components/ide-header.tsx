@@ -12,6 +12,8 @@ import { useToast } from "@/hooks/use-toast"
 import { useNewFileConfirmation } from "./confirmation-modal"
 import { EnhancedFileManager } from "@/lib/enhanced-file-manager"
 import { IDESettings } from "@/lib/settings"
+import { useTranslation } from "@/lib/i18n"
+import { useTheme } from "./theme-provider"
 
 interface IDEHeaderProps {
   code: string
@@ -41,6 +43,8 @@ export function IDEHeader({
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
   const { toast } = useToast()
   const { confirmNewFile } = useNewFileConfirmation()
+  const { settings } = useTheme()
+  const { t } = useTranslation(settings.language)
 
   const handleNewCode = () => {
     const hasUnsavedChanges = EnhancedFileManager.hasUnsavedChanges(code)
@@ -49,7 +53,7 @@ export function IDEHeader({
       onCodeChange(getDefaultCode())
       EnhancedFileManager.markAsSaved()
       toast({
-        title: "Novo código criado",
+        title: t("newCodeCreated"),
         description: "Editor limpo para novo arquivo",
       })
     })
@@ -73,7 +77,7 @@ print("Olá, mundo!")
     if (location === "localStorage") {
       EnhancedFileManager.saveToLocalStorage(code, filename!)
       toast({
-        title: "Arquivo salvo",
+        title: t("codeSaved"),
         description: `"${filename}" foi salvo no navegador`,
       })
     } else {
@@ -91,7 +95,7 @@ print("Olá, mundo!")
       if (loadedCode) {
         onCodeChange(loadedCode)
         toast({
-          title: "Arquivo carregado",
+          title: t("codeLoaded"),
           description: `"${filename}" foi carregado com sucesso`,
         })
       }
@@ -117,24 +121,24 @@ print("Olá, mundo!")
           <div className="hidden md:flex items-center gap-2">
             <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={onRunCode}>
               <Play className="w-4 h-4 mr-2" />
-              Rodar
+              {t("run")}
             </Button>
             <Button size="sm" variant="outline" onClick={() => setIsShareDialogOpen(true)}>
               <Share2 className="w-4 h-4 mr-2" />
-              Compartilhar
+              {t("share")}
             </Button>
             <div className="w-px h-6 bg-border mx-2" />
             <Button size="sm" variant="ghost" onClick={handleNewCode}>
               <FileText className="w-4 h-4 mr-2" />
-              Novo Código
+              {t("newCode")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setIsSaveDialogOpen(true)}>
               <Save className="w-4 h-4 mr-2" />
-              Salvar
+              {t("save")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setIsLoadDialogOpen(true)}>
               <FolderOpen className="w-4 h-4 mr-2" />
-              Carregar
+              {t("load")}
             </Button>
             <div className="w-px h-6 bg-border mx-2" />
             <Button size="sm" variant="ghost" onClick={onUndo} disabled={!canUndo}>
@@ -151,7 +155,7 @@ print("Olá, mundo!")
           <div className="flex md:hidden items-center gap-1">
             <Button size="sm" className="bg-primary hover:bg-primary/90 px-2" onClick={onRunCode}>
               <Play className="w-4 h-4 mr-1" />
-              Rodar
+              {t("run")}
             </Button>
             <Button
               size="sm"

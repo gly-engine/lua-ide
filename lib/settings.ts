@@ -3,7 +3,7 @@
 export interface IDESettings {
   theme: "light" | "dark" | "system"
   editorTheme: string
-  language: "pt" | "en"
+  language: "pt" | "en" | "es"
   autoSave: boolean
   fontSize: number
   tabSize: number
@@ -15,7 +15,7 @@ export interface IDESettings {
 export const DEFAULT_SETTINGS: IDESettings = {
   theme: "system",
   editorTheme: "vs",
-  language: "pt",
+  language: "en", // Default to English
   autoSave: true,
   fontSize: 14,
   tabSize: 2,
@@ -38,15 +38,26 @@ export class SettingsManager {
     if (typeof window === "undefined") {
       return DEFAULT_SETTINGS
     }
+
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored)
         return { ...DEFAULT_SETTINGS, ...parsed }
       }
+
+      // If no settings are stored, detect language
+      const browserLang = navigator.language.split("-")[0] as IDESettings["language"];
+      if (["en", "pt", "es"].includes(browserLang)) {
+        const settings = { ...DEFAULT_SETTINGS, language: browserLang };
+        this.saveSettings(settings);
+        return settings;
+      }
+
     } catch (error) {
       console.error("Error loading settings:", error)
     }
+
     return DEFAULT_SETTINGS
   }
 

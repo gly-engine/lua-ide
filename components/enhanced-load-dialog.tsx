@@ -13,7 +13,9 @@ import { Badge } from "@/components/ui/badge"
 import { EnhancedFileManager, type SavedFile } from "@/lib/enhanced-file-manager"
 import { Upload, Link, HardDrive, File, Trash2, Code, Package } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import { ptBR, enUS, es } from "date-fns/locale"
+import { useTranslation } from "@/lib/i18n"
+import { useTheme } from "./theme-provider"
 
 interface EnhancedLoadDialogProps {
   open: boolean
@@ -26,6 +28,10 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
   const [url, setUrl] = useState("")
   const [savedFiles, setSavedFiles] = useState<SavedFile[]>([])
   const [selectedFile, setSelectedFile] = useState<SavedFile | null>(null)
+  const { settings } = useTheme()
+  const { t, language } = useTranslation(settings.language)
+
+  const locales: { [key: string]: Locale } = { pt: ptBR, en: enUS, es };
 
   useEffect(() => {
     if (open) {
@@ -62,7 +68,7 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
 
   const handleDeleteFile = (fileId: string, event: React.MouseEvent) => {
     event.stopPropagation()
-    if (confirm("Tem certeza que deseja excluir este arquivo?")) {
+    if (confirm(t("confirmNewCode"))) {
       EnhancedFileManager.deleteSavedFile(fileId)
       setSavedFiles(EnhancedFileManager.getSavedFiles())
       if (selectedFile?.id === fileId) {
@@ -77,7 +83,7 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
-            Carregar Arquivo
+            {t("loadCode")}
           </DialogTitle>
         </DialogHeader>
 
@@ -91,33 +97,33 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
               <RadioGroupItem value="localStorage" id="localStorage" />
               <Label htmlFor="localStorage" className="flex items-center gap-2 cursor-pointer">
                 <HardDrive className="h-4 w-4" />
-                Arquivos salvos
+                {t("browser")}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="file" id="file" />
               <Label htmlFor="file" className="flex items-center gap-2 cursor-pointer">
                 <File className="h-4 w-4" />
-                Arquivo do dispositivo
+                {t("localFile")}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="url" id="url" />
               <Label htmlFor="url" className="flex items-center gap-2 cursor-pointer">
                 <Link className="h-4 w-4" />
-                URL
+                {t("urlFile")}
               </Label>
             </div>
           </RadioGroup>
 
           {source === "localStorage" && (
             <div className="space-y-2">
-              <Label>Selecione um arquivo salvo:</Label>
+              <Label>{t("selectFile")}</Label>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <ScrollArea className="h-64 border rounded-md">
                   <div className="p-2 space-y-1">
                     {savedFiles.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-8">Nenhum arquivo salvo encontrado</p>
+                      <p className="text-muted-foreground text-center py-8">{t("errorLoading")}</p>
                     ) : (
                       savedFiles.map((file) => (
                         <div
@@ -138,7 +144,7 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
                                 )}
                               </div>
                               <p className="text-xs text-muted-foreground">
-                                Atualizado {formatDistanceToNow(file.updatedAt, { addSuffix: true, locale: ptBR })}
+                                {formatDistanceToNow(file.updatedAt, { addSuffix: true, locale: locales[language] })}
                               </p>
                             </div>
                             {!file.isAutoSave && (
@@ -184,8 +190,8 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
                         )}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        <p>Criado: {selectedFile.createdAt.toLocaleDateString("pt-BR")}</p>
-                        <p>Modificado: {selectedFile.updatedAt.toLocaleDateString("pt-BR")}</p>
+                        <p>Criado: {selectedFile.createdAt.toLocaleDateString(language)}</p>
+                        <p>Modificado: {selectedFile.updatedAt.toLocaleDateString(language)}</p>
                       </div>
                     </div>
                   </div>
@@ -196,14 +202,14 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
 
           {source === "file" && (
             <div>
-              <Label htmlFor="file-upload">Selecione um arquivo:</Label>
+              <Label htmlFor="file-upload">{t("selectFile")}</Label>
               <Input id="file-upload" type="file" accept=".lua,.txt" onChange={handleFileUpload} className="mt-1" />
             </div>
           )}
 
           {source === "url" && (
             <div>
-              <Label htmlFor="url-input">URL do arquivo:</Label>
+              <Label htmlFor="url-input">{t("urlFile")}</Label>
               <Input
                 id="url-input"
                 value={url}
@@ -216,13 +222,13 @@ export function EnhancedLoadDialog({ open, onOpenChange, onLoad }: EnhancedLoadD
 
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
+              {t("cancel")}
             </Button>
             <Button
               onClick={handleLoad}
               disabled={(source === "url" && !url) || (source === "localStorage" && !selectedFile)}
             >
-              Carregar
+              {t("load")}
             </Button>
           </div>
         </div>

@@ -14,6 +14,13 @@ const nextConfig = {
     unoptimized: true,
   },
   transpilePackages: ["monaco-editor"],
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.csv$/,
+      use: "raw-loader",
+    });
+    return config;
+  },
 }
 
 export default nextConfig
