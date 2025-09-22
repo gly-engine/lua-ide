@@ -1,7 +1,64 @@
 "use client"
 
-import Editor, { OnChange } from "@monaco-editor/react"
+import Editor, { OnChange, useMonaco } from "@monaco-editor/react"
+import { useEffect } from "react"
+import { parseTmTheme } from "monaco-themes"
 import { useTheme } from "./theme-provider"
+
+const themes = {
+  active4d: () => import("monaco-themes/themes/Active4D.json"),
+  "all-hallows-eve": () => import("monaco-themes/themes/All Hallows Eve.json"),
+  amy: () => import("monaco-themes/themes/Amy.json"),
+  "birds-of-paradise": () => import("monaco-themes/themes/Birds of Paradise.json"),
+  blackboard: () => import("monaco-themes/themes/Blackboard.json"),
+  "brilliance-black": () => import("monaco-themes/themes/Brilliance Black.json"),
+  "brilliance-dull": () => import("monaco-themes/themes/Brilliance Dull.json"),
+  "chrome-devtools": () => import("monaco-themes/themes/Chrome DevTools.json"),
+  "clouds-midnight": () => import("monaco-themes/themes/Clouds Midnight.json"),
+  clouds: () => import("monaco-themes/themes/Clouds.json"),
+  cobalt: () => import("monaco-themes/themes/Cobalt.json"),
+  cobalt2: () => import("monaco-themes/themes/Cobalt2.json"),
+  dawn: () => import("monaco-themes/themes/Dawn.json"),
+  "dominion-day": () => import("monaco-themes/themes/Dominion Day.json"),
+  dracula: () => import("monaco-themes/themes/Dracula.json"),
+  dreamweaver: () => import("monaco-themes/themes/Dreamweaver.json"),
+  eiffel: () => import("monaco-themes/themes/Eiffel.json"),
+  "espresso-libre": () => import("monaco-themes/themes/Espresso Libre.json"),
+  github: () => import("monaco-themes/themes/GitHub.json"),
+  idle: () => import("monaco-themes/themes/IDLE.json"),
+  "idle-fingers": () => import("monaco-themes/themes/idleFingers.json"),
+  iplastic: () => import("monaco-themes/themes/iPlastic.json"),
+  katzenmilch: () => import("monaco-themes/themes/Katzenmilch.json"),
+  "kr-theme": () => import("monaco-themes/themes/krTheme.json"),
+  kuroir: () => import("monaco-themes/themes/Kuroir Theme.json"),
+  lazy: () => import("monaco-themes/themes/LAZY.json"),
+  "magic-wb": () => import("monaco-themes/themes/MagicWB (Amiga).json"),
+  "merbivore-soft": () => import("monaco-themes/themes/Merbivore Soft.json"),
+  merbivore: () => import("monaco-themes/themes/Merbivore.json"),
+  monoindustrial: () => import("monaco-themes/themes/monoindustrial.json"),
+  monokai: () => import("monaco-themes/themes/Monokai.json"),
+  "monokai-bright": () => import("monaco-themes/themes/Monokai Bright.json"),
+  "night-owl": () => import("monaco-themes/themes/Night Owl.json"),
+  nord: () => import("monaco-themes/themes/Nord.json"),
+  "oceanic-next": () => import("monaco-themes/themes/Oceanic Next.json"),
+  "pastels-on-dark": () => import("monaco-themes/themes/Pastels on Dark.json"),
+  "slush-and-poppies": () => import("monaco-themes/themes/Slush and Poppies.json"),
+  "solarized-dark": () => import("monaco-themes/themes/Solarized-dark.json"),
+  "solarized-light": () => import("monaco-themes/themes/Solarized-light.json"),
+  "space-cadet": () => import("monaco-themes/themes/SpaceCadet.json"),
+  sunburst: () => import("monaco-themes/themes/Sunburst.json"),
+  textmate: () => import("monaco-themes/themes/Textmate (Mac Classic).json"),
+  tomorrow: () => import("monaco-themes/themes/Tomorrow.json"),
+  "tomorrow-night": () => import("monaco-themes/themes/Tomorrow-Night.json"),
+  "tomorrow-night-blue": () => import("monaco-themes/themes/Tomorrow-Night-Blue.json"),
+  "tomorrow-night-bright": () => import("monaco-themes/themes/Tomorrow-Night-Bright.json"),
+  "tomorrow-night-eighties": () => import("monaco-themes/themes/Tomorrow-Night-Eighties.json"),
+  twilight: () => import("monaco-themes/themes/Twilight.json"),
+  "upstream-sunburst": () => import("monaco-themes/themes/Upstream Sunburst.json"),
+  "vibrant-ink": () => import("monaco-themes/themes/Vibrant Ink.json"),
+  xcode: () => import("monaco-themes/themes/Xcode_default.json"),
+  zenburnesque: () => import("monaco-themes/themes/Zenburnesque.json"),
+}
 
 interface MonacoEditorProps {
   value: string
@@ -10,9 +67,24 @@ interface MonacoEditorProps {
 
 export function MonacoEditor({ value, onChange }: MonacoEditorProps) {
   const { actualTheme, settings } = useTheme()
+  const monaco = useMonaco()
+
+  useEffect(() => {
+    if (monaco) {
+      const defineThemesPromises = Object.entries(themes).map(([themeName, importTheme]) => {
+        return importTheme().then(themeData => {
+          monaco.editor.defineTheme(themeName, themeData as any)
+        })
+      })
+
+      Promise.all(defineThemesPromises).then(() => {
+        monaco.editor.setTheme(settings.editorTheme)
+      })
+    }
+  }, [monaco, settings.editorTheme])
 
   const getEditorTheme = () => {
-    return settings.editorTheme;
+    return settings.editorTheme
   }
 
   const handleEditorChange: OnChange = value => {
@@ -26,7 +98,6 @@ export function MonacoEditor({ value, onChange }: MonacoEditorProps) {
 
   return (
     <Editor
-      key={JSON.stringify(settings)}
       height="100%"
       language="lua"
       theme={getEditorTheme()}

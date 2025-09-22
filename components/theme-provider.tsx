@@ -17,12 +17,8 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<IDESettings>(DEFAULT_SETTINGS)
+  const [settings, setSettings] = useState<IDESettings>(SettingsManager.getSettings())
   const [actualTheme, setActualTheme] = useState<"light" | "dark">("light")
-
-  useEffect(() => {
-    setSettings(SettingsManager.getSettings())
-  }, [])
 
   const setTheme = (theme: Theme) => {
     const updated = SettingsManager.updateSetting("theme", theme)
