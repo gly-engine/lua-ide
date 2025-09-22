@@ -1,0 +1,62 @@
+key,en,pt,es
+run,Run,Rodar,Ejecutar
+stop,Stop,Parar,Parar
+share,Share,Compartilhar,Compartir
+newCode,New Code,Novo Código,Nuevo Código
+save,Save,Salvar,Guardar
+load,Load,Carregar,Cargar
+undo,Undo,Desfazer,Deshacer
+redo,Redo,Refazer,Rehacer
+settings,Settings,Configurações,Configuraciones
+menu,Menu,Menu,Menú
+consoleTitle,Output Console,Console de Saída,Consola de Salida
+clear,Clear,Limpar,Limpiar
+execute,Execute,Executar,Ejecutar
+waitingInput,Waiting for input,Aguardando entrada,Esperando entrada
+enterInput,Enter your input and press Enter...,Digite sua entrada e pressione Enter...,Ingrese su entrada y presione Enter...
+inputDisabled,Input disabled,Entrada desabilitada,Entrada deshabilitada
+useIoRead,Use io.read() in code to enable input during execution,Use io.read() no código para ativar entrada durante execução,Use io.read() en el código para habilitar la entrada durante la ejecución
+settingsTitle,Settings,Configurações,Configuraciones
+appearance,Appearance,Aparência,Apariencia
+windowTheme,Window Theme,Tema da Janela,Tema de la Ventana
+light,Light,Claro,Claro
+dark,Dark,Escuro,Oscuro
+system,System,Sistema,Sistema
+editorTheme,Editor Theme,Tema do Editor,Tema del Editor
+language,Language,Idioma,Idioma
+portuguese,Portuguese,Português,Portugués
+english,English,Inglês,Inglés
+spanish,Spanish,Espanhol,Español
+editor,Editor,Editor,Editor
+fontSize,Font Size,Tamanho da Fonte,Tamaño de Fuente
+wordWrap,Word Wrap,Quebra de Linha,Salto de Línea
+minimap,Minimap,Minimapa,Minimapa
+lineNumbers,Line Numbers,Números de Linha,Números de Línea
+autoSave,Auto Save,Salvamento Automático,Guardado Automático
+resetSettings,Reset to defaults,Restaurar padrões,Restaurar valores predeterminados
+close,Close,Fechar,Cerrar
+saveCode,Save Code,Salvar Código,Guardar Código
+loadCode,Load Code,Carregar Código,Cargar Código
+shareCode,Share Code,Compartilhar Código,Compartir Código
+whereSave,Where to save?,Onde salvar?,¿Dónde guardar?
+browser,Browser (localStorage),Navegador (localStorage),Navegador (localStorage)
+downloadFile,Download file,Baixar arquivo,Descargar archivo
+filename,Filename,Nome do arquivo,Nombre del archivo
+cancel,Cancel,Cancelar,Cancelar
+saving,Saving...,Salvando...,Guardando...
+loading,Loading...,Carregando...,Cargando...
+whereLoad,Where to load from?,De onde carregar?,¿De dónde cargar?
+localFile,Local file,Arquivo local,Archivo local
+selectFile,Select file,Selecionar arquivo,Seleccionar archivo
+urlFile,File URL,URL do arquivo,URL del archivo
+shareableUrl,Shareable URL,URL compartilhável,URL para compartir
+copyUrl,Copy URL,Copiar URL,Copiar URL
+codeSaved,Code saved successfully!,Código salvo com sucesso!,¡Código guardado con éxito!
+codeLoaded,Code loaded successfully!,Código carregado com sucesso!,¡Código cargado con éxito!
+urlCopied,URL copied!,URL copiada!,¡URL copiada!
+newCodeCreated,New code created,Novo código criado,Nuevo código creado
+confirmNewCode,Are you sure you want to create a new file? Current code will be lost.,Tem certeza que deseja criar um novo arquivo? O código atual será perdido.,¿Estás seguro de que quieres crear un nuevo archivo? El código actual se perderá.
+settingsReset,Settings reset to defaults,Configurações restauradas para os padrões,Configuración restaurada a los valores predeterminados
+errorSaving,Error saving,Erro ao salvar,Error al guardar
+errorLoading,Error loading,Erro ao carregar,Error al cargar
+errorCopying,Error copying,Erro ao copiar,Error al copiar

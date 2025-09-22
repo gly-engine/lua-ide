@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { FileManager } from "@/lib/file-manager"
 import { useToast } from "@/hooks/use-toast"
 import { Share2, Copy, Check } from "lucide-react"
+import { useTranslation } from "@/lib/i18n"
+import { useTheme } from "./theme-provider"
 
 interface ShareDialogProps {
   isOpen: boolean
@@ -19,6 +21,8 @@ export function ShareDialog({ isOpen, onClose, code }: ShareDialogProps) {
   const [shareUrl, setShareUrl] = useState("")
   const [isCopied, setIsCopied] = useState(false)
   const { toast } = useToast()
+  const { settings } = useTheme()
+  const { t } = useTranslation(settings.language)
 
   // Generate URL when dialog opens
   useEffect(() => {
@@ -28,26 +32,26 @@ export function ShareDialog({ isOpen, onClose, code }: ShareDialogProps) {
         setShareUrl(url)
       } catch (error) {
         toast({
-          title: "Erro ao gerar URL",
+          title: t("errorCopying"),
           description: "Não foi possível criar a URL compartilhável",
           variant: "destructive",
         })
       }
     }
-  }, [isOpen, code, toast])
+  }, [isOpen, code, toast, t])
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl)
       setIsCopied(true)
       toast({
-        title: "URL copiada!",
+        title: t("urlCopied"),
         description: "A URL foi copiada para a área de transferência",
       })
       setTimeout(() => setIsCopied(false), 2000)
     } catch (error) {
       toast({
-        title: "Erro ao copiar",
+        title: t("errorCopying"),
         description: "Não foi possível copiar a URL",
         variant: "destructive",
       })
@@ -60,31 +64,30 @@ export function ShareDialog({ isOpen, onClose, code }: ShareDialogProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Share2 className="w-5 h-5" />
-            Compartilhar Código
+            {t("shareCode")}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
-            <Label>URL compartilhável</Label>
+            <Label>{t("shareableUrl")}</Label>
             <div className="flex flex-col gap-2 mt-1 md:flex-row">
-              <Input value={shareUrl} readOnly placeholder="Gerando URL..." className="flex-1" />
+              <Input value={shareUrl} readOnly placeholder={t("loading")} className="flex-1" />
               <Button size="sm" variant="outline" onClick={copyToClipboard} disabled={!shareUrl}>
                 {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Esta URL contém seu código codificado em base64. Qualquer pessoa com este link poderá visualizar e
-              executar seu código.
+              {t("shareableUrl")}
             </p>
           </div>
 
           <div className="flex flex-col gap-2 md:flex-row md:justify-end">
             <Button variant="outline" onClick={onClose}>
-              Fechar
+              {t("close")}
             </Button>
             <Button onClick={copyToClipboard} disabled={!shareUrl}>
-              Copiar URL
+              {t("copyUrl")}
             </Button>
           </div>
         </div>

@@ -13,6 +13,19 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  transpilePackages: ["monaco-editor"],
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.csv$/,
+      use: "raw-loader",
+    });
+
+    if (!isServer) {
+      config.resolve.fallback = { fs: false, module: false, net: false, tls: false };
+    }
+
+    return config;
+  },
 }
 
 export default nextConfig

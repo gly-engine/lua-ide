@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Terminal, Trash2, ChevronUp, ChevronDown } from "lucide-react"
-import { luaInterpreter } from "@/lib/lua-interpreter"
+import { wasmoonInterpreter } from "@/lib/wasmoon-interpreter"
 import { useMobile } from "@/hooks/use-mobile"
+import { useTranslation } from "@/lib/i18n"
+import { useTheme } from "./theme-provider"
 
 interface OutputLine {
   type: "output" | "error" | "input" | "system"
@@ -21,6 +23,8 @@ interface OutputConsoleProps {
 }
 
 export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleCollapse }: OutputConsoleProps) {
+  const { settings } = useTheme()
+  const { t } = useTranslation(settings.language)
   const [output, setOutput] = useState<OutputLine[]>([
     {
       type: "system",
@@ -38,6 +42,7 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
   const [isWaitingForInput, setIsWaitingForInput] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputResolveRef = useRef<((value: string) => void) | null>(null)
+  const lastCheckedCodeRef = useRef<string | null>(null)
   const isMobile = useMobile()
 
   const addOutput = (content: string, type: "output" | "error" | "input" | "system" = "output") => {
@@ -46,30 +51,21 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
 
   // Initialize Lua interpreter
   useEffect(() => {
-    luaInterpreter.initialize()
-
-    luaInterpreter.setOutputCallback((output, type) => {
+    wasmoonInterpreter.setOutputCallback((output, type) => {
       addOutput(output, type)
-    })
-
-    luaInterpreter.setInputCallback(() => {
-      return new Promise<string>((resolve) => {
-        setIsInputEnabled(true)
-        setIsWaitingForInput(true)
-        inputResolveRef.current = resolve
-      })
     })
   }, [])
 
   // Check if current code has io.read() and enable input accordingly
   useEffect(() => {
-    if (currentCode) {
-      const hasIoRead = luaInterpreter.hasIoRead(currentCode)
+    if (currentCode && currentCode !== lastCheckedCodeRef.current) {
+      const hasIoRead = wasmoonInterpreter.hasIoRead(currentCode)
       if (hasIoRead && !isWaitingForInput) {
-        addOutput("Código contém io.read() - campo de entrada será ativado durante execução", "system")
+        addOutput(t("useIoRead"), "system")
       }
+      lastCheckedCodeRef.current = currentCode
     }
-  }, [currentCode, isWaitingForInput])
+  }, [currentCode, isWaitingForInput, t])
 
   const handleInputSubmit = () => {
     if (inputValue.trim()) {
@@ -90,7 +86,7 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
     setOutput([
       {
         type: "system",
-        content: "Console limpo",
+        content: t("consoleTitle"),
         timestamp: new Date(),
       },
     ])
@@ -105,7 +101,7 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
     addOutput("Executando código...", "system")
 
     try {
-      const result = await luaInterpreter.executeCode(currentCode)
+      const result = await wasmoonInterpreter.executeCode(currentCode)
       if (!result.success && result.error) {
         addOutput(`Erro: ${result.error}`, "error")
       }
@@ -129,7 +125,7 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
       <div className="h-full flex items-center justify-between px-2 sm:px-4 bg-card border-t border-border">
         <div className="flex items-center gap-2">
           <Terminal className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium">Console</span>
+          <span className="text-sm font-medium">{t("consoleTitle")}</span>
           {output.length > 2 && <span className="text-xs text-muted-foreground">({output.length - 2})</span>}
         </div>
         <Button size="sm" variant="ghost" onClick={onToggleCollapse} className="px-2">
@@ -145,10 +141,10 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
       <div className="flex items-center justify-between px-2 sm:px-4 py-2 border-b border-border bg-muted/50 flex-shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <Terminal className="w-4 h-4 text-primary flex-shrink-0" />
-          <span className="text-sm font-medium truncate">{isMobile ? "Console" : "Console de Saída"}</span>
+          <span className="text-sm font-medium truncate">{isMobile ? t("consoleTitle") : t("consoleTitle")}</span>
           {isWaitingForInput && (
             <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded hidden sm:inline">
-              Aguardando entrada
+              {t("waitingInput")}
             </span>
           )}
         </div>
@@ -156,12 +152,12 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
           {!isMobile && (
             <Button size="sm" variant="outline" onClick={executeCurrentCode} className="px-2 bg-transparent">
               <Terminal className="w-3 h-3 mr-1" />
-              Executar
+              {t("execute")}
             </Button>
           )}
           <Button size="sm" variant="ghost" onClick={clearOutput} className="px-2">
             <Trash2 className="w-3 h-3" />
-            {!isMobile && <span className="ml-1">Limpar</span>}
+            {!isMobile && <span className="ml-1">{t("clear")}</span>}
           </Button>
           {onToggleCollapse && (
             <Button size="sm" variant="ghost" onClick={onToggleCollapse} className="px-2">
@@ -209,11 +205,11 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
             placeholder={
               isInputEnabled
                 ? isMobile
-                  ? "Digite aqui..."
-                  : "Digite sua entrada e pressione Enter..."
+                  ? t("enterInput")
+                  : t("enterInput")
                 : isWaitingForInput
-                  ? "Aguardando..."
-                  : "Entrada desabilitada"
+                  ? t("waitingInput")
+                  : t("inputDisabled")
             }
             disabled={!isInputEnabled}
             onKeyDown={(e) => {
@@ -230,10 +226,10 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
         {!isMobile && (
           <div className="text-xs text-muted-foreground mt-2">
             {isInputEnabled
-              ? "Campo de entrada ativo - digite e pressione Enter"
+              ? t("enterInput")
               : isWaitingForInput
-                ? "Aguardando ativação do campo de entrada"
-                : "Use io.read() no código para ativar entrada durante execução"}
+                ? t("waitingInput")
+                : t("useIoRead")}
           </div>
         )}
       </div>

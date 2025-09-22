@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu } from "lucide-react"
+import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle } from "lucide-react"
 import { useState } from "react"
 import { MobileMenu } from "./mobile-menu"
 import { EnhancedSaveDialog } from "./enhanced-save-dialog"
@@ -11,25 +11,34 @@ import { SettingsDialog } from "./settings-dialog"
 import { useToast } from "@/hooks/use-toast"
 import { useNewFileConfirmation } from "./confirmation-modal"
 import { EnhancedFileManager } from "@/lib/enhanced-file-manager"
+import { IDESettings } from "@/lib/settings"
+import { useTranslation } from "@/lib/i18n"
+import { useTheme } from "./theme-provider"
 
 interface IDEHeaderProps {
   code: string
   onCodeChange: (code: string) => void
   onRunCode: () => void
+  onStopCode: () => void
+  isRunning: boolean
   onUndo?: () => void
   onRedo?: () => void
   canUndo?: boolean
   canRedo?: boolean
+  onSettingsChange: (settings: IDESettings) => void
 }
 
 export function IDEHeader({
   code,
   onCodeChange,
   onRunCode,
+  onStopCode,
+  isRunning,
   onUndo,
   onRedo,
   canUndo = false,
   canRedo = false,
+  onSettingsChange,
 }: IDEHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
@@ -38,6 +47,8 @@ export function IDEHeader({
   const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
   const { toast } = useToast()
   const { confirmNewFile } = useNewFileConfirmation()
+  const { settings } = useTheme()
+  const { t } = useTranslation(settings.language)
 
   const handleNewCode = () => {
     const hasUnsavedChanges = EnhancedFileManager.hasUnsavedChanges(code)
@@ -46,7 +57,7 @@ export function IDEHeader({
       onCodeChange(getDefaultCode())
       EnhancedFileManager.markAsSaved()
       toast({
-        title: "Novo código criado",
+        title: t("newCodeCreated"),
         description: "Editor limpo para novo arquivo",
       })
     })
@@ -70,7 +81,7 @@ print("Olá, mundo!")
     if (location === "localStorage") {
       EnhancedFileManager.saveToLocalStorage(code, filename!)
       toast({
-        title: "Arquivo salvo",
+        title: t("codeSaved"),
         description: `"${filename}" foi salvo no navegador`,
       })
     } else {
@@ -88,7 +99,7 @@ print("Olá, mundo!")
       if (loadedCode) {
         onCodeChange(loadedCode)
         toast({
-          title: "Arquivo carregado",
+          title: t("codeLoaded"),
           description: `"${filename}" foi carregado com sucesso`,
         })
       }
@@ -112,26 +123,33 @@ print("Olá, mundo!")
 
           {/* Desktop Toolbar */}
           <div className="hidden md:flex items-center gap-2">
-            <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={onRunCode}>
-              <Play className="w-4 h-4 mr-2" />
-              Rodar
-            </Button>
+            {isRunning ? (
+              <Button size="sm" variant="destructive" onClick={onStopCode}>
+                <StopCircle className="w-4 h-4 mr-2" />
+                {t("stop")}
+              </Button>
+            ) : (
+              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={onRunCode}>
+                <Play className="w-4 h-4 mr-2" />
+                {t("run")}
+              </Button>
+            )}
             <Button size="sm" variant="outline" onClick={() => setIsShareDialogOpen(true)}>
               <Share2 className="w-4 h-4 mr-2" />
-              Compartilhar
+              {t("share")}
             </Button>
             <div className="w-px h-6 bg-border mx-2" />
             <Button size="sm" variant="ghost" onClick={handleNewCode}>
               <FileText className="w-4 h-4 mr-2" />
-              Novo Código
+              {t("newCode")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setIsSaveDialogOpen(true)}>
               <Save className="w-4 h-4 mr-2" />
-              Salvar
+              {t("save")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setIsLoadDialogOpen(true)}>
               <FolderOpen className="w-4 h-4 mr-2" />
-              Carregar
+              {t("load")}
             </Button>
             <div className="w-px h-6 bg-border mx-2" />
             <Button size="sm" variant="ghost" onClick={onUndo} disabled={!canUndo}>
@@ -146,10 +164,17 @@ print("Olá, mundo!")
           </div>
 
           <div className="flex md:hidden items-center gap-1">
-            <Button size="sm" className="bg-primary hover:bg-primary/90 px-2" onClick={onRunCode}>
-              <Play className="w-4 h-4 mr-1" />
-              Rodar
-            </Button>
+            {isRunning ? (
+              <Button size="sm" variant="destructive" onClick={onStopCode}>
+                <StopCircle className="w-4 h-4 mr-1" />
+                {t("stop")}
+              </Button>
+            ) : (
+              <Button size="sm" className="bg-primary hover:bg-primary/90 px-2" onClick={onRunCode}>
+                <Play className="w-4 h-4 mr-1" />
+                {t("run")}
+              </Button>
+            )}
             <Button
               size="sm"
               variant="outline"
@@ -187,7 +212,7 @@ print("Olá, mundo!")
       />
       <EnhancedLoadDialog open={isLoadDialogOpen} onOpenChange={setIsLoadDialogOpen} onLoad={handleLoad} />
       <ShareDialog isOpen={isShareDialogOpen} onClose={() => setIsShareDialogOpen(false)} code={code} />
-      <SettingsDialog isOpen={isSettingsDialogOpen} onClose={() => setIsSettingsDialogOpen(false)} />
+      <SettingsDialog isOpen={isSettingsDialogOpen} onClose={() => setIsSettingsDialogOpen(false)} onSettingsChange={onSettingsChange} />
     </>
   )
 }
