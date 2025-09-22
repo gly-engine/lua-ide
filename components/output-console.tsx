@@ -54,14 +54,6 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
     wasmoonInterpreter.setOutputCallback((output, type) => {
       addOutput(output, type)
     })
-
-    wasmoonInterpreter.setInputCallback(() => {
-      return new Promise<string>((resolve) => {
-        setIsInputEnabled(true)
-        setIsWaitingForInput(true)
-        inputResolveRef.current = resolve
-      })
-    })
   }, [])
 
   // Check if current code has io.read() and enable input accordingly
