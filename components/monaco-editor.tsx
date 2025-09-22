@@ -1,7 +1,7 @@
 "use client"
 
-import Editor, { OnChange, useMonaco } from "@monaco-editor/react"
-import { useEffect } from "react"
+import Editor, { OnChange, useMonaco, EditorProps } from "@monaco-editor/react"
+import { useEffect, useRef } from "react"
 import { parseTmTheme } from "monaco-themes"
 import { useTheme } from "./theme-provider"
 
@@ -63,11 +63,15 @@ const themes = {
 interface MonacoEditorProps {
   value: string
   onChange: (value: string) => void
+  onMount?: EditorProps['onMount']
+  readOnly?: boolean
+  virtualKeyboardActive?: boolean
 }
 
-export function MonacoEditor({ value, onChange }: MonacoEditorProps) {
+export function MonacoEditor({ value, onChange, onMount, readOnly, virtualKeyboardActive }: MonacoEditorProps) {
   const { actualTheme, settings } = useTheme()
   const monaco = useMonaco()
+  const editorContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (monaco) {
@@ -83,6 +87,15 @@ export function MonacoEditor({ value, onChange }: MonacoEditorProps) {
     }
   }, [monaco, settings.editorTheme])
 
+  useEffect(() => {
+    if (editorContainerRef.current) {
+      const textarea = editorContainerRef.current.querySelector('textarea');
+      if (textarea) {
+        textarea.readOnly = !!virtualKeyboardActive;
+      }
+    }
+  }, [virtualKeyboardActive, monaco]);
+
   const getEditorTheme = () => {
     return settings.editorTheme
   }
@@ -97,28 +110,31 @@ export function MonacoEditor({ value, onChange }: MonacoEditorProps) {
   }
 
   return (
-    <Editor
-      height="100%"
-      language="lua"
-      theme={getEditorTheme()}
-      value={value}
-      onChange={handleEditorChange}
-      options={{
-        fontSize: settings.fontSize,
-        fontFamily: "var(--font-geist-mono), 'Courier New', monospace",
-        lineNumbers: settings.lineNumbers,
-        minimap: { enabled: settings.minimap },
-        scrollBeyondLastLine: false,
-        automaticLayout: true,
-        insertSpaces: true,
-        wordWrap: settings.wordWrap ? "on" : "off",
-        contextmenu: true,
-        selectOnLineNumbers: true,
-        roundedSelection: false,
-        readOnly: false,
-        cursorStyle: "line",
-      }}
-      loading={<div className="flex items-center justify-center h-full bg-muted">Carregando editor...</div>}
-    />
+    <div ref={editorContainerRef} className="h-full w-full">
+      <Editor
+        height="100%"
+        language="lua"
+        theme={getEditorTheme()}
+        value={value}
+        onChange={handleEditorChange}
+        onMount={onMount}
+        options={{
+          fontSize: settings.fontSize,
+          fontFamily: "var(--font-geist-mono), 'Courier New', monospace",
+          lineNumbers: settings.lineNumbers,
+          minimap: { enabled: settings.minimap },
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+          insertSpaces: true,
+          wordWrap: settings.wordWrap ? "on" : "off",
+          contextmenu: true,
+          selectOnLineNumbers: true,
+          roundedSelection: false,
+          readOnly: readOnly,
+          cursorStyle: "line",
+        }}
+        loading={<div className="flex items-center justify-center h-full bg-muted">Carregando editor...</div>}
+      />
+    </div>
   )
 }

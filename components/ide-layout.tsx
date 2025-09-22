@@ -10,6 +10,9 @@ import { wasmoonInterpreter } from "@/lib/wasmoon-interpreter"
 import { useToast } from "@/hooks/use-toast"
 import { useMobile } from "@/hooks/use-mobile"
 import { useTheme } from "./theme-provider"
+import VirtualKeyboard from "./virtual-keyboard"
+import eventBus from "@/lib/event-bus"
+import { editor } from "monaco-editor"
 
 export function IDELayout() {
   const [code, setCode] = useState("")
@@ -20,6 +23,58 @@ export function IDELayout() {
   const { toast } = useToast()
   const isMobile = useMobile()
   const lastSaveTimeRef = useRef<number>(0)
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
+
+  const showVirtualKeyboard = isMobile && settings.keyboard.enabled;
+
+  useEffect(() => {
+    const handleKeyPress = (button: string) => {
+      const editor = editorRef.current;
+      if (!editor) return;
+
+      switch (button) {
+        case "{bksp}":
+          editor.trigger('keyboard', 'deleteLeft', null);
+          break;
+        case "{enter}":
+          editor.trigger('keyboard', 'type', { text: '\n' });
+          break;
+        case "{tab}":
+          editor.trigger('keyboard', 'tab', null);
+          break;
+        case "{space}":
+          editor.trigger('keyboard', 'type', { text: ' ' });
+          break;
+        case "{arrowup}":
+          editor.trigger('keyboard', 'cursorUp', null);
+          break;
+        case "{arrowdown}":
+          editor.trigger('keyboard', 'cursorDown', null);
+          break;
+        case "{arrowleft}":
+          editor.trigger('keyboard', 'cursorLeft', null);
+          break;
+        case "{arrowright}":
+          editor.trigger('keyboard', 'cursorRight', null);
+          break;
+        case "{shift}":
+        case "{lock}":
+        case "{numbers}":
+        case "{abc}":
+          // Handled by keyboard component
+          break;
+        default:
+          editor.trigger('keyboard', 'type', { text: button });
+          break;
+      }
+      editor.focus();
+    };
+
+    eventBus.on('keypress', handleKeyPress);
+    return () => {
+      eventBus.off('keypress', handleKeyPress);
+    };
+  }, []);
 
   useEffect(() => {
     const initializeCode = async () => {
@@ -34,7 +89,6 @@ export function IDELayout() {
             title: "Código carregado do link",
             description: "O código compartilhado foi carregado com sucesso.",
           });
-          // Clean the URL hash
           window.history.replaceState(null, "", " ");
           return;
         } catch (error) {
@@ -47,7 +101,6 @@ export function IDELayout() {
         }
       }
 
-      // Then try localStorage if auto-save is enabled
       if (settings.autoSave) {
         const savedCode = localStorage.getItem("lua-ide-code");
         if (savedCode) {
@@ -57,8 +110,8 @@ export function IDELayout() {
         }
       }
 
-      // Finally, use default code
-      const defaultCode = `-- Bem-vindo ao Gly Engine Lua IDE\nprint("Olá, mundo!")\n\n-- Exemplo de função\nfunction saudacao(nome)\n    return "Olá, " .. nome .. "!"\nend\n\nprint(saudacao("Desenvolvedor"))\n\n-- Exemplo com entrada do usuário (descomente para testar)\n-- print("Digite seu nome:")\n-- nome = io.read()\n-- print("Olá, " .. nome .. "!")`;
+      const defaultCode = `-- Bem-vindo ao Gly Engine Lua IDE\nprint("Olá, mundo!")\n\n-- Exemplo de função\nfunction saudacao(nome)\n    return "Olá, " .. nome .. "!"\nend\n\nprint(saudacao("Desenvolvedor"))\n
+-- Exemplo com entrada do usuário (descomente para testar)\n-- print("Digite seu nome:")\n-- nome = io.read()\n-- print("Olá, " .. nome .. "!")`;
 
       setCode(defaultCode);
       historyManagerRef.current = new HistoryManager(defaultCode);
@@ -76,10 +129,8 @@ export function IDELayout() {
   const handleCodeChange = (newCode: string) => {
     setCode(newCode)
 
-    // Add to history with debouncing (only if significant time has passed)
     const now = Date.now()
     if (now - lastSaveTimeRef.current > 1000) {
-      // 1 second debounce
       historyManagerRef.current.addState(newCode)
       lastSaveTimeRef.current = now
     }
@@ -136,6 +187,10 @@ export function IDELayout() {
     }
   }
 
+  const handleEditorMount = (editor: editor.IStandaloneCodeEditor) => {
+    editorRef.current = editor;
+  };
+
   return (
     <div className="h-screen w-screen flex flex-col bg-background overflow-hidden">
       <IDEHeader
@@ -157,11 +212,16 @@ export function IDELayout() {
             isConsoleCollapsed
               ? "flex-1"
               : isMobile
-                ? "hidden" // Hide editor completely on mobile when console is open
+                ? "hidden"
                 : "flex-1"
           } min-h-0 overflow-hidden`}
         >
-          <MonacoEditor value={code} onChange={handleCodeChange} />
+          <MonacoEditor
+            value={code}
+            onChange={handleCodeChange}
+            onMount={handleEditorMount}
+            virtualKeyboardActive={showVirtualKeyboard}
+          />
         </div>
 
         <div
@@ -169,7 +229,7 @@ export function IDELayout() {
             isConsoleCollapsed
               ? "h-12"
               : isMobile
-                ? "flex-1" // Take full remaining height on mobile
+                ? "flex-1"
                 : "h-64"
           }`}
         >
@@ -180,6 +240,7 @@ export function IDELayout() {
           />
         </div>
       </div>
+      {showVirtualKeyboard && <VirtualKeyboard settings={settings} />}
     </div>
   )
 }

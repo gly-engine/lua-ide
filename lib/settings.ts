@@ -10,6 +10,12 @@ export interface IDESettings {
   wordWrap: boolean
   minimap: boolean
   lineNumbers: "on" | "off"
+  keyboard: {
+    enabled: boolean
+    hapticFeedback: boolean
+    layout: "ansi" | "abnt2"
+    theme: string
+  }
 }
 
 export const DEFAULT_SETTINGS: IDESettings = {
@@ -22,6 +28,12 @@ export const DEFAULT_SETTINGS: IDESettings = {
   wordWrap: true,
   minimap: false,
   lineNumbers: "on",
+  keyboard: {
+    enabled: false,
+    hapticFeedback: true,
+    layout: "ansi",
+    theme: "hg-theme-default",
+  },
 }
 
 export const EDITOR_THEMES = [
