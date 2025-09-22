@@ -61,7 +61,7 @@ errorSaving,Error saving,Erro ao salvar,Error al guardar
 errorLoading,Error loading,Erro ao carregar,Error al cargar
 errorCopying,Error copying,Erro ao copiar,Error al copiar
 fontSizeWarning,We recommend using the virtual keyboard with smaller fonts to avoid automatic system zoom.,Recomendamos usar o teclado virtual com fontes menores para evitar o zoom automático do sistema.,Recomendamos usar el teclado virtual con fuentes más pequeñas para evitar el zoom automático del sistema.
-virtualKeyboard,Virtual Keyboard,Teclado Virtual,Teclado Virtual
+virtualKeyboard,Keyboard,Teclado,Teclado
 enableVirtualKeyboard,Enable virtual keyboard,Ativar teclado virtual,Activar teclado virtual
 hapticFeedback,Haptic feedback,Feedback tátil,Retroalimentación háptica
 keyboardLayout,Keyboard Layout,Layout do Teclado,Diseño del Teclado
