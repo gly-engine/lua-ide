@@ -168,7 +168,7 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                 <Slider
                   value={[settings.fontSize]}
                   onValueChange={([value]) => updateSetting("fontSize", value)}
-                  min={10}
+                  min={6}
                   max={24}
                   step={1}
                   className="w-full"

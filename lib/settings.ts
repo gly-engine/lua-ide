@@ -14,9 +14,9 @@ export interface IDESettings {
 
 export const DEFAULT_SETTINGS: IDESettings = {
   theme: "system",
-  editorTheme: "vs",
+  editorTheme: "vs-dark",
   language: "en", // Default to English
-  autoSave: true,
+  autoSave: false,
   fontSize: 14,
   tabSize: 2,
   wordWrap: true,
