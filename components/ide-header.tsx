@@ -11,6 +11,7 @@ import { SettingsDialog } from "./settings-dialog"
 import { useToast } from "@/hooks/use-toast"
 import { useNewFileConfirmation } from "./confirmation-modal"
 import { EnhancedFileManager } from "@/lib/enhanced-file-manager"
+import { IDESettings } from "@/lib/settings"
 
 interface IDEHeaderProps {
   code: string
@@ -20,6 +21,7 @@ interface IDEHeaderProps {
   onRedo?: () => void
   canUndo?: boolean
   canRedo?: boolean
+  onSettingsChange: (settings: IDESettings) => void
 }
 
 export function IDEHeader({
@@ -30,6 +32,7 @@ export function IDEHeader({
   onRedo,
   canUndo = false,
   canRedo = false,
+  onSettingsChange,
 }: IDEHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
@@ -187,7 +190,7 @@ print("Olá, mundo!")
       />
       <EnhancedLoadDialog open={isLoadDialogOpen} onOpenChange={setIsLoadDialogOpen} onLoad={handleLoad} />
       <ShareDialog isOpen={isShareDialogOpen} onClose={() => setIsShareDialogOpen(false)} code={code} />
-      <SettingsDialog isOpen={isSettingsDialogOpen} onClose={() => setIsSettingsDialogOpen(false)} />
+      <SettingsDialog isOpen={isSettingsDialogOpen} onClose={() => setIsSettingsDialogOpen(false)} onSettingsChange={onSettingsChange} />
     </>
   )
 }

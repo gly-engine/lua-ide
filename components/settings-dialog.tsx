@@ -174,21 +174,6 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                 />
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <Label>{t("tabSize")}</Label>
-                  <span className="text-sm text-muted-foreground">{settings.tabSize}</span>
-                </div>
-                <Slider
-                  value={[settings.tabSize]}
-                  onValueChange={([value]) => updateSetting("tabSize", value)}
-                  min={2}
-                  max={8}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
               <div className="flex items-center justify-between">
                 <Label htmlFor="wordWrap">{t("wordWrap")}</Label>
                 <Switch
@@ -204,6 +189,15 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                   id="minimap"
                   checked={settings.minimap}
                   onCheckedChange={(checked) => updateSetting("minimap", checked)}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="lineNumbers">{t("lineNumbers")}</Label>
+                <Switch
+                  id="lineNumbers"
+                  checked={settings.lineNumbers === "on"}
+                  onCheckedChange={(checked) => updateSetting("lineNumbers", checked ? "on" : "off")}
                 />
               </div>
 

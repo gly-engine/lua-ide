@@ -9,6 +9,7 @@ export interface IDESettings {
   tabSize: number
   wordWrap: boolean
   minimap: boolean
+  lineNumbers: "on" | "off"
 }
 
 export const DEFAULT_SETTINGS: IDESettings = {
@@ -20,6 +21,7 @@ export const DEFAULT_SETTINGS: IDESettings = {
   tabSize: 2,
   wordWrap: true,
   minimap: false,
+  lineNumbers: "on",
 }
 
 export const EDITOR_THEMES = [
@@ -33,6 +35,9 @@ export class SettingsManager {
   private static readonly STORAGE_KEY = "lua-ide-settings"
 
   static getSettings(): IDESettings {
+    if (typeof window === "undefined") {
+      return DEFAULT_SETTINGS
+    }
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY)
       if (stored) {
@@ -46,6 +51,9 @@ export class SettingsManager {
   }
 
   static saveSettings(settings: IDESettings): void {
+    if (typeof window === "undefined") {
+      return
+    }
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(settings))
     } catch (error) {

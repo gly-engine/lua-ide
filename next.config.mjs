@@ -13,6 +13,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  transpilePackages: ["monaco-editor"],
 }
 
 export default nextConfig

@@ -7,15 +7,15 @@ import { IDEHeader } from "./ide-header"
 import { HistoryManager } from "@/lib/history-manager"
 import { FileManager } from "@/lib/file-manager"
 import { luaInterpreter } from "@/lib/lua-interpreter"
-import { useTheme } from "./theme-provider"
 import { useToast } from "@/hooks/use-toast"
 import { useMobile } from "@/hooks/use-mobile"
+import { useTheme } from "./theme-provider"
 
 export function IDELayout() {
   const [code, setCode] = useState("")
   const [isConsoleCollapsed, setIsConsoleCollapsed] = useState(false)
   const historyManagerRef = useRef<HistoryManager>(new HistoryManager())
-  const { settings } = useTheme()
+  const { settings, updateSettings } = useTheme()
   const { toast } = useToast()
   const isMobile = useMobile()
   const lastSaveTimeRef = useRef<number>(0)
@@ -138,6 +138,7 @@ print(saudacao("Desenvolvedor"))
         onRedo={handleRedo}
         canUndo={historyManagerRef.current.canUndo()}
         canRedo={historyManagerRef.current.canRedo()}
+        onSettingsChange={updateSettings}
       />
 
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
