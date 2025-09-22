@@ -1,5 +1,7 @@
 "use client"
 
+
+
 export interface SaveOptions {
   location: "localStorage" | "device"
   filename?: string
@@ -61,14 +63,7 @@ export class FileManager {
       } else if (options.source === "file" && options.file) {
         const text = await options.file.text()
         return { success: true, code: text, filename: options.file.name }
-      } else if (options.source === "url" && options.url) {
-        const response = await fetch(options.url)
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-        }
-        const code = await response.text()
-        return { success: true, code }
-      }
+
 
       return { success: false, error: "Opção de carregamento inválida" }
     } catch (error) {
@@ -76,31 +71,7 @@ export class FileManager {
     }
   }
 
-  // Share functionality - create shareable URL with base64 encoded code
-  static createShareableUrl(code: string): string {
-    try {
-      const compressed = btoa(encodeURIComponent(code))
-      const baseUrl = window.location.origin + window.location.pathname
-      return `${baseUrl}?code=${compressed}`
-    } catch (error) {
-      throw new Error("Erro ao criar URL compartilhável")
-    }
-  }
 
-  // Load code from URL parameter
-  static loadFromUrl(): string | null {
-    try {
-      const urlParams = new URLSearchParams(window.location.search)
-      const codeParam = urlParams.get("code")
-      if (codeParam) {
-        return decodeURIComponent(atob(codeParam))
-      }
-      return null
-    } catch (error) {
-      console.error("Erro ao carregar código da URL:", error)
-      return null
-    }
-  }
 
   // Get auto-saved code
   static getAutoSavedCode(): string | null {

@@ -24,6 +24,16 @@ const nextConfig = {
       config.resolve.fallback = { fs: false, module: false, net: false, tls: false };
     }
 
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
+    };
+
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: 'asset/resource',
+    });
+
     return config;
   },
 }

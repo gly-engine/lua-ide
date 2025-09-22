@@ -5,7 +5,7 @@ import { MonacoEditor } from "./monaco-editor"
 import { OutputConsole } from "./output-console"
 import { IDEHeader } from "./ide-header"
 import { HistoryManager } from "@/lib/history-manager"
-import { FileManager } from "@/lib/file-manager"
+import { decompressCode } from "@/lib/compression";
 import { wasmoonInterpreter } from "@/lib/wasmoon-interpreter"
 import { useToast } from "@/hooks/use-toast"
 import { useMobile } from "@/hooks/use-mobile"
@@ -22,51 +22,50 @@ export function IDELayout() {
   const lastSaveTimeRef = useRef<number>(0)
 
   useEffect(() => {
-    const initializeCode = () => {
-      // First, try to load from URL
-      const urlCode = FileManager.loadFromUrl()
-      if (urlCode) {
-        setCode(urlCode)
-        historyManagerRef.current = new HistoryManager(urlCode)
-        toast({
-          title: "Código carregado da URL",
-          description: "Código compartilhado carregado com sucesso",
-        })
-        return
+    const initializeCode = async () => {
+      const hash = window.location.hash;
+      if (hash.startsWith("#code=")) {
+        const encodedCode = hash.substring(6);
+        try {
+          const decodedCode = await decompressCode(encodedCode);
+          setCode(decodedCode);
+          historyManagerRef.current = new HistoryManager(decodedCode);
+          toast({
+            title: "Código carregado do link",
+            description: "O código compartilhado foi carregado com sucesso.",
+          });
+          // Clean the URL hash
+          window.history.replaceState(null, "", " ");
+          return;
+        } catch (error) {
+          console.error("Failed to decompress code from URL:", error);
+          toast({
+            title: "Erro ao carregar código",
+            description: "O link de código compartilhado parece estar corrompido.",
+            variant: "destructive",
+          });
+        }
       }
 
       // Then try localStorage if auto-save is enabled
       if (settings.autoSave) {
-        const savedCode = FileManager.getAutoSavedCode()
+        const savedCode = localStorage.getItem("lua-ide-code");
         if (savedCode) {
-          setCode(savedCode)
-          historyManagerRef.current = new HistoryManager(savedCode)
-          return
+          setCode(savedCode);
+          historyManagerRef.current = new HistoryManager(savedCode);
+          return;
         }
       }
 
       // Finally, use default code
-      const defaultCode = `-- Bem-vindo ao Gly Engine Lua IDE
-print("Olá, mundo!")
+      const defaultCode = `-- Bem-vindo ao Gly Engine Lua IDE\nprint("Olá, mundo!")\n\n-- Exemplo de função\nfunction saudacao(nome)\n    return "Olá, " .. nome .. "!"\nend\n\nprint(saudacao("Desenvolvedor"))\n\n-- Exemplo com entrada do usuário (descomente para testar)\n-- print("Digite seu nome:")\n-- nome = io.read()\n-- print("Olá, " .. nome .. "!")`;
 
--- Exemplo de função
-function saudacao(nome)
-    return "Olá, " .. nome .. "!"
-end
+      setCode(defaultCode);
+      historyManagerRef.current = new HistoryManager(defaultCode);
+    };
 
-print(saudacao("Desenvolvedor"))
-
--- Exemplo com entrada do usuário (descomente para testar)
--- print("Digite seu nome:")
--- nome = io.read()
--- print("Olá, " .. nome .. "!")`
-
-      setCode(defaultCode)
-      historyManagerRef.current = new HistoryManager(defaultCode)
-    }
-
-    initializeCode()
-  }, [settings.autoSave, toast])
+    initializeCode();
+  }, [settings.autoSave, toast]);
 
   useEffect(() => {
     if (isMobile) {

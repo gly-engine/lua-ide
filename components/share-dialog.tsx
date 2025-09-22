@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { FileManager } from "@/lib/file-manager"
+import { compressCode } from "@/lib/compression";
 import { useToast } from "@/hooks/use-toast"
 import { Share2, Copy, Check } from "lucide-react"
 import { useTranslation } from "@/lib/i18n"
@@ -24,21 +24,32 @@ export function ShareDialog({ isOpen, onClose, code }: ShareDialogProps) {
   const { settings } = useTheme()
   const { t } = useTranslation(settings.language)
 
-  // Generate URL when dialog opens
+
+
   useEffect(() => {
-    if (isOpen && code) {
-      try {
-        const url = FileManager.createShareableUrl(code)
-        setShareUrl(url)
-      } catch (error) {
-        toast({
-          title: t("errorCopying"),
-          description: "Não foi possível criar a URL compartilhável",
-          variant: "destructive",
-        })
-      }
+    if (isOpen) {
+      generateUrl();
     }
-  }, [isOpen, code, toast, t])
+  }, [isOpen]);
+
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  const generateUrl = async () => {
+    setIsGenerating(true);
+    try {
+      const encodedCode = await compressCode(code);
+      const baseUrl = window.location.origin + window.location.pathname;
+      setShareUrl(`${baseUrl}#code=${encodedCode}`);
+    } catch (error) {
+      toast({
+        title: t("errorCreatingUrl"),
+        description: "Não foi possível criar a URL compartilhável",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const copyToClipboard = async () => {
     try {
@@ -69,25 +80,28 @@ export function ShareDialog({ isOpen, onClose, code }: ShareDialogProps) {
         </DialogHeader>
 
         <div className="space-y-4">
-          <div>
-            <Label>{t("shareableUrl")}</Label>
-            <div className="flex flex-col gap-2 mt-1 md:flex-row">
-              <Input value={shareUrl} readOnly placeholder={t("loading")} className="flex-1" />
-              <Button size="sm" variant="outline" onClick={copyToClipboard} disabled={!shareUrl}>
-                {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              </Button>
+          {isGenerating ? (
+            <div className="flex items-center justify-center">
+              <p>{t("generating")}</p>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {t("shareableUrl")}
-            </p>
-          </div>
+          ) : (
+            <div>
+              <Label>{t("shareableUrl")}</Label>
+              <div className="flex flex-col gap-2 mt-1 md:flex-row">
+                <Input value={shareUrl} readOnly className="flex-1" />
+                <Button size="sm" variant="outline" onClick={copyToClipboard} disabled={!shareUrl}>
+                  {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {t("shareableUrl")}
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-2 md:flex-row md:justify-end">
             <Button variant="outline" onClick={onClose}>
               {t("close")}
-            </Button>
-            <Button onClick={copyToClipboard} disabled={!shareUrl}>
-              {t("copyUrl")}
             </Button>
           </div>
         </div>
