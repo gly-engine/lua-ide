@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle } from "lucide-react"
+import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle, CodeXml } from "lucide-react"
 import { useState } from "react"
 import dynamic from "next/dynamic";
 import { MobileMenu as MobileMenuComponent } from "./mobile-menu";
@@ -132,15 +132,9 @@ print("Olá, mundo!")
     <>
       <header className="border-b border-border bg-card px-2 sm:px-4 py-2 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Mobile: Space for logo */}
-            <div className="w-8 h-8 sm:hidden flex items-center justify-center">
-              {/* Space reserved for Lua logo */}
-              <div className="w-6 h-6 bg-primary/10 rounded border border-primary/20"></div>
-            </div>
-            {/* Desktop: Text logo */}
-            <div className="hidden sm:block text-xl font-bold text-primary">Gly Engine</div>
-            <div className="text-sm text-muted-foreground hidden md:block">Lua IDE</div>
+          <div className="flex items-center gap-2">
+            <CodeXml className="h-6 w-6 text-primary" />
+            <div className="text-lg font-bold text-primary">Lua IDE</div>
           </div>
 
           {/* Desktop Toolbar */}

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { FileText, Save, FolderOpen, Undo2, Redo2, Settings, Code2 } from "lucide-react"
+import { FileText, Save, FolderOpen, Undo2, Redo2, Settings, CodeXml } from "lucide-react"
 import { useTheme } from "./theme-provider"
 import { useTranslation } from "@/lib/i18n"
 
@@ -44,9 +44,9 @@ export function MobileMenu({
       <SheetContent side="right" className="w-full sm:w-80 p-0 flex flex-col m-0 max-w-none border-0 rounded-none">
         <SheetHeader className="px-3 py-3 border-b border-border">
           <SheetTitle className="flex items-center gap-2 text-left">
-            <Code2 className="w-5 h-5" />
+            <CodeXml className="w-5 h-5 text-primary" />
             <div>
-              <div className="font-bold">GlyEngine Gly IDE</div>
+              <div className="font-bold">Lua IDE</div>
               <div className="text-sm text-muted-foreground font-normal">Menu de Ferramentas</div>
             </div>
           </SheetTitle>
