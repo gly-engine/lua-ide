@@ -1,5 +1,7 @@
 "use client"
 
+import { decompressCode } from "./compression";
+
 export interface SavedFile {
   id: string
   name: string
@@ -125,12 +127,35 @@ export class EnhancedFileManager {
         const text = await options.file.text()
         return { success: true, code: text, filename: options.file.name }
       } else if (options.source === "url" && options.url) {
-        const response = await fetch(options.url)
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        let urlString = options.url;
+        if (!urlString.startsWith("http://") && !urlString.startsWith("https://")) {
+          urlString = "https://" + urlString;
         }
-        const code = await response.text()
-        return { success: true, code }
+
+        try {
+          const url = new URL(urlString);
+          const hash = url.hash.substring(1);
+          const params = new URLSearchParams(hash);
+          const encodedCode = params.get("code");
+
+          if (encodedCode) {
+            try {
+              const code = await decompressCode(encodeURIComponent(encodedCode));
+              return { success: true, code };
+            } catch (error) {
+              return { success: false, error: "Failed to decompress code from URL hash" };
+            }
+          } else {
+            const response = await fetch(urlString);
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            const code = await response.text();
+            return { success: true, code };
+          }
+        } catch (error) {
+          return { success: false, error: "Invalid URL format" };
+        }
       }
 
       return { success: false, error: "Opção de carregamento inválida" }
@@ -187,29 +212,7 @@ export class EnhancedFileManager {
     return Date.now() - new Date(lastSaveTime).getTime()
   }
 
-  static createShareableUrl(code: string): string {
-    try {
-      const compressed = btoa(encodeURIComponent(code))
-      const baseUrl = window.location.origin + window.location.pathname
-      return `${baseUrl}?code=${compressed}`
-    } catch (error) {
-      throw new Error("Erro ao criar URL compartilhável")
-    }
-  }
 
-  static loadFromUrl(): string | null {
-    try {
-      const urlParams = new URLSearchParams(window.location.search)
-      const codeParam = urlParams.get("code")
-      if (codeParam) {
-        return decodeURIComponent(atob(codeParam))
-      }
-      return null
-    } catch (error) {
-      console.error("Erro ao carregar código da URL:", error)
-      return null
-    }
-  }
 
   static getAutoSavedCode(): string | null {
     const savedFiles = this.getSavedFiles()

@@ -10,6 +10,12 @@ export interface IDESettings {
   wordWrap: boolean
   minimap: boolean
   lineNumbers: "on" | "off"
+  keyboard: {
+    enabled: boolean
+    hapticFeedback: boolean
+    layout: "ansi" | "abnt2"
+    theme: string
+  }
 }
 
 export const DEFAULT_SETTINGS: IDESettings = {
@@ -22,6 +28,12 @@ export const DEFAULT_SETTINGS: IDESettings = {
   wordWrap: true,
   minimap: false,
   lineNumbers: "on",
+  keyboard: {
+    enabled: false,
+    hapticFeedback: true,
+    layout: "ansi",
+    theme: "hg-theme-default",
+  },
 }
 
 export const EDITOR_THEMES = [
@@ -29,6 +41,58 @@ export const EDITOR_THEMES = [
   { value: "vs-dark", label: "Visual Studio Dark" },
   { value: "hc-black", label: "High Contrast Dark" },
   { value: "hc-light", label: "High Contrast Light" },
+  { value: "active4d", label: "Active4D" },
+  { value: "all-hallows-eve", label: "All Hallows Eve" },
+  { value: "amy", label: "Amy" },
+  { value: "birds-of-paradise", label: "Birds of Paradise" },
+  { value: "blackboard", label: "Blackboard" },
+  { value: "brilliance-black", label: "Brilliance Black" },
+  { value: "brilliance-dull", label: "Brilliance Dull" },
+  { value: "chrome-devtools", label: "Chrome DevTools" },
+  { value: "clouds-midnight", label: "Clouds Midnight" },
+  { value: "clouds", label: "Clouds" },
+  { value: "cobalt", label: "Cobalt" },
+  { value: "cobalt2", label: "Cobalt2" },
+  { value: "dawn", label: "Dawn" },
+  { value: "dominion-day", label: "Dominion Day" },
+  { value: "dracula", label: "Dracula" },
+  { value: "dreamweaver", label: "Dreamweaver" },
+  { value: "eiffel", label: "Eiffel" },
+  { value: "espresso-libre", label: "Espresso Libre" },
+  { value: "github", label: "GitHub" },
+  { value: "idle", label: "IDLE" },
+  { value: "idle-fingers", label: "idleFingers" },
+  { value: "iplastic", label: "iPlastic" },
+  { value: "katzenmilch", label: "Katzenmilch" },
+  { value: "kr-theme", label: "KrTheme" },
+  { value: "kuroir", label: "Kuroir" },
+  { value: "lazy", label: "LAZY" },
+  { value: "magic-wb", label: "MagicWB (Amiga)" },
+  { value: "merbivore-soft", label: "Merbivore Soft" },
+  { value: "merbivore", label: "Merbivore" },
+  { value: "monoindustrial", label: "monoindustrial" },
+  { value: "monokai", label: "Monokai" },
+  { value: "monokai-bright", label: "Monokai Bright" },
+  { value: "night-owl", label: "Night Owl" },
+  { value: "nord", label: "Nord" },
+  { value: "oceanic-next", label: "Oceanic Next" },
+  { value: "pastels-on-dark", label: "Pastels on Dark" },
+  { value: "slush-and-poppies", label: "Slush and Poppies" },
+  { value: "solarized-dark", label: "Solarized-dark" },
+  { value: "solarized-light", label: "Solarized-light" },
+  { value: "space-cadet", label: "SpaceCadet" },
+  { value: "sunburst", label: "Sunburst" },
+  { value: "textmate", label: "Textmate (Mac Classic)" },
+  { value: "tomorrow", label: "Tomorrow" },
+  { value: "tomorrow-night", label: "Tomorrow-Night" },
+  { value: "tomorrow-night-blue", label: "Tomorrow-Night-Blue" },
+  { value: "tomorrow-night-bright", label: "Tomorrow-Night-Bright" },
+  { value: "tomorrow-night-eighties", label: "Tomorrow-Night-Eighties" },
+  { value: "twilight", label: "Twilight" },
+  { value: "upstream-sunburst", label: "Upstream Sunburst" },
+  { value: "vibrant-ink", label: "Vibrant Ink" },
+  { value: "xcode", label: "Xcode_default" },
+  { value: "zenburnesque", label: "Zenburnesque" },
 ]
 
 export class SettingsManager {

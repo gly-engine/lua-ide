@@ -11,6 +11,8 @@ import { Separator } from "@/components/ui/separator"
 import { SettingsManager, EDITOR_THEMES, type IDESettings } from "@/lib/settings"
 import { useTranslation } from "@/lib/i18n"
 import { useToast } from "@/hooks/use-toast"
+import { useMobile } from "@/hooks/use-mobile"
+import { usePwaInstall } from "@/hooks/use-pwa-install"
 import { Settings, RotateCcw, Trash2, Package, ExternalLink } from "lucide-react"
 import { EnhancedFileManager } from "@/lib/enhanced-file-manager"
 import { useConfirmation } from "./confirmation-modal"
@@ -29,6 +31,10 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
   const { t } = useTranslation(settings.language)
   const { toast } = useToast()
   const { showConfirmation } = useConfirmation()
+  const isMobile = useMobile()
+  const { isInstallable, promptInstall } = usePwaInstall()
+
+  const showFontSizeWarning = isMobile && settings.fontSize < 16 && !settings.keyboard.enabled;
 
   useEffect(() => {
     if (isOpen) {
@@ -173,6 +179,11 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                   step={1}
                   className="w-full"
                 />
+                {showFontSizeWarning && (
+                  <p className="text-xs text-amber-500 mt-2">
+                    {t("fontSizeWarning")}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center justify-between">
@@ -210,6 +221,46 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                   onCheckedChange={(checked) => updateSetting("autoSave", checked)}
                 />
               </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Virtual Keyboard Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-3">{t("virtualKeyboard")}</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="virtualKeyboard-enabled">{t("enableVirtualKeyboard")}</Label>
+                <Switch
+                  id="virtualKeyboard-enabled"
+                  checked={settings.keyboard.enabled}
+                  onCheckedChange={(checked) => updateSetting("keyboard", { ...settings.keyboard, enabled: checked })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="hapticFeedback-enabled">{t("hapticFeedback")}</Label>
+                <Switch
+                  id="hapticFeedback-enabled"
+                  checked={settings.keyboard.hapticFeedback}
+                  onCheckedChange={(checked) => updateSetting("keyboard", { ...settings.keyboard, hapticFeedback: checked })}
+                />
+              </div>
+              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <Label htmlFor="keyboard-layout">{t("keyboardLayout")}</Label>
+                <Select value={settings.keyboard.layout} onValueChange={(value) => updateSetting("keyboard", { ...settings.keyboard, layout: value as any })}>
+                  <SelectTrigger className="w-full md:w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ansi">ANSI</SelectItem>
+                    <SelectItem value="abnt2">ABNT2</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t("virtualKeyboardNotice")}
+              </p>
             </div>
           </div>
 
@@ -256,6 +307,22 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                   ))}
                 </div>
               </ScrollArea>
+            )}
+          </div>
+
+          <Separator />
+
+          {/* PWA Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-3">{t("pwa")}
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              {t("pwaDescription")}
+            </p>
+            {isInstallable && (
+              <Button onClick={promptInstall} className="w-full">
+                {t("installPwa")}
+              </Button>
             )}
           </div>
 

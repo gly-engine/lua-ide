@@ -3,7 +3,14 @@
 import { Button } from "@/components/ui/button"
 import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle } from "lucide-react"
 import { useState } from "react"
-import { MobileMenu } from "./mobile-menu"
+import dynamic from "next/dynamic";
+import { MobileMenu as MobileMenuComponent } from "./mobile-menu";
+
+const MobileMenu = dynamic(() => Promise.resolve(MobileMenuComponent), {
+  ssr: false,
+  loading: () => null // Render nothing on the server while loading
+});
+
 import { EnhancedSaveDialog } from "./enhanced-save-dialog"
 import { EnhancedLoadDialog } from "./enhanced-load-dialog"
 import { ShareDialog } from "./share-dialog"
@@ -93,18 +100,33 @@ print("Olá, mundo!")
     }
   }
 
-  const handleLoad = (source: string, filename?: string) => {
-    if (source === "localStorage" && filename) {
-      const loadedCode = EnhancedFileManager.loadFromLocalStorage(filename)
-      if (loadedCode) {
-        onCodeChange(loadedCode)
-        toast({
-          title: t("codeLoaded"),
-          description: `"${filename}" foi carregado com sucesso`,
-        })
-      }
+  const handleLoad = async (source: "localStorage" | "file" | "url", data?: any) => {
+    let result: { success: boolean; code?: string; filename?: string; error?: string } | undefined;
+
+    if (source === "localStorage") {
+      result = await EnhancedFileManager.load({ source, filename: data });
+    } else if (source === "file") {
+      result = await EnhancedFileManager.load({ source, file: data.file });
+    } else if (source === "url") {
+      result = await EnhancedFileManager.load({ source, url: data.url });
     }
-  }
+
+    if (result && result.success && result.code) {
+      onCodeChange(result.code);
+      toast({
+        title: t("codeLoaded"),
+        description: result.filename
+          ? `"${result.filename}" foi carregado com sucesso`
+          : "Código carregado com sucesso",
+      });
+    } else {
+      toast({
+        title: t("errorLoading"),
+        description: result?.error || "Falha ao carregar o código",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <>

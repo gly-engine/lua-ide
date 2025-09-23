@@ -5,11 +5,14 @@ import { MonacoEditor } from "./monaco-editor"
 import { OutputConsole } from "./output-console"
 import { IDEHeader } from "./ide-header"
 import { HistoryManager } from "@/lib/history-manager"
-import { FileManager } from "@/lib/file-manager"
+import { decompressCode } from "@/lib/compression";
 import { wasmoonInterpreter } from "@/lib/wasmoon-interpreter"
 import { useToast } from "@/hooks/use-toast"
 import { useMobile } from "@/hooks/use-mobile"
 import { useTheme } from "./theme-provider"
+import VirtualKeyboard from "./virtual-keyboard"
+import eventBus from "@/lib/event-bus"
+import { editor } from "monaco-editor"
 
 export function IDELayout() {
   const [code, setCode] = useState("")
@@ -20,53 +23,102 @@ export function IDELayout() {
   const { toast } = useToast()
   const isMobile = useMobile()
   const lastSaveTimeRef = useRef<number>(0)
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
+
+  const showVirtualKeyboard = isMobile && settings.keyboard.enabled;
 
   useEffect(() => {
-    const initializeCode = () => {
-      // First, try to load from URL
-      const urlCode = FileManager.loadFromUrl()
-      if (urlCode) {
-        setCode(urlCode)
-        historyManagerRef.current = new HistoryManager(urlCode)
-        toast({
-          title: "Código carregado da URL",
-          description: "Código compartilhado carregado com sucesso",
-        })
-        return
-      }
+    const handleKeyPress = (button: string) => {
+      const editor = editorRef.current;
+      if (!editor) return;
 
-      // Then try localStorage if auto-save is enabled
-      if (settings.autoSave) {
-        const savedCode = FileManager.getAutoSavedCode()
-        if (savedCode) {
-          setCode(savedCode)
-          historyManagerRef.current = new HistoryManager(savedCode)
-          return
+      switch (button) {
+        case "{bksp}":
+          editor.trigger('keyboard', 'deleteLeft', null);
+          break;
+        case "{enter}":
+          editor.trigger('keyboard', 'type', { text: '\n' });
+          break;
+        case "{tab}":
+          editor.trigger('keyboard', 'tab', null);
+          break;
+        case "{space}":
+          editor.trigger('keyboard', 'type', { text: ' ' });
+          break;
+        case "{arrowup}":
+          editor.trigger('keyboard', 'cursorUp', null);
+          break;
+        case "{arrowdown}":
+          editor.trigger('keyboard', 'cursorDown', null);
+          break;
+        case "{arrowleft}":
+          editor.trigger('keyboard', 'cursorLeft', null);
+          break;
+        case "{arrowright}":
+          editor.trigger('keyboard', 'cursorRight', null);
+          break;
+        case "{shift}":
+        case "{lock}":
+        case "{numbers}":
+        case "{abc}":
+          // Handled by keyboard component
+          break;
+        default:
+          editor.trigger('keyboard', 'type', { text: button });
+          break;
+      }
+      editor.focus();
+    };
+
+    eventBus.on('keypress', handleKeyPress);
+    return () => {
+      eventBus.off('keypress', handleKeyPress);
+    };
+  }, []);
+
+  useEffect(() => {
+    const initializeCode = async () => {
+      const hash = window.location.hash;
+      if (hash.startsWith("#code=")) {
+        const encodedCode = hash.substring(6);
+        try {
+          const decodedCode = await decompressCode(encodedCode);
+          setCode(decodedCode);
+          historyManagerRef.current = new HistoryManager(decodedCode);
+          toast({
+            title: "Código carregado do link",
+            description: "O código compartilhado foi carregado com sucesso.",
+          });
+          window.history.replaceState(null, "", " ");
+          return;
+        } catch (error) {
+          console.error("Failed to decompress code from URL:", error);
+          toast({
+            title: "Erro ao carregar código",
+            description: "O link de código compartilhado parece estar corrompido.",
+            variant: "destructive",
+          });
         }
       }
 
-      // Finally, use default code
-      const defaultCode = `-- Bem-vindo ao Gly Engine Lua IDE
-print("Olá, mundo!")
+      if (settings.autoSave) {
+        const savedCode = localStorage.getItem("lua-ide-code");
+        if (savedCode) {
+          setCode(savedCode);
+          historyManagerRef.current = new HistoryManager(savedCode);
+          return;
+        }
+      }
 
--- Exemplo de função
-function saudacao(nome)
-    return "Olá, " .. nome .. "!"
-end
+      const defaultCode = `-- Bem-vindo ao Gly Engine Lua IDE\nprint("Olá, mundo!")\n\n-- Exemplo de função\nfunction saudacao(nome)\n    return "Olá, " .. nome .. "!"\nend\n\nprint(saudacao("Desenvolvedor"))\n
+-- Exemplo com entrada do usuário (descomente para testar)\n-- print("Digite seu nome:")\n-- nome = io.read()\n-- print("Olá, " .. nome .. "!")`;
 
-print(saudacao("Desenvolvedor"))
+      setCode(defaultCode);
+      historyManagerRef.current = new HistoryManager(defaultCode);
+    };
 
--- Exemplo com entrada do usuário (descomente para testar)
--- print("Digite seu nome:")
--- nome = io.read()
--- print("Olá, " .. nome .. "!")`
-
-      setCode(defaultCode)
-      historyManagerRef.current = new HistoryManager(defaultCode)
-    }
-
-    initializeCode()
-  }, [settings.autoSave, toast])
+    initializeCode();
+  }, [settings.autoSave, toast]);
 
   useEffect(() => {
     if (isMobile) {
@@ -77,10 +129,8 @@ print(saudacao("Desenvolvedor"))
   const handleCodeChange = (newCode: string) => {
     setCode(newCode)
 
-    // Add to history with debouncing (only if significant time has passed)
     const now = Date.now()
     if (now - lastSaveTimeRef.current > 1000) {
-      // 1 second debounce
       historyManagerRef.current.addState(newCode)
       lastSaveTimeRef.current = now
     }
@@ -137,6 +187,10 @@ print(saudacao("Desenvolvedor"))
     }
   }
 
+  const handleEditorMount = (editor: editor.IStandaloneCodeEditor) => {
+    editorRef.current = editor;
+  };
+
   return (
     <div className="h-screen w-screen flex flex-col bg-background overflow-hidden">
       <IDEHeader
@@ -158,11 +212,16 @@ print(saudacao("Desenvolvedor"))
             isConsoleCollapsed
               ? "flex-1"
               : isMobile
-                ? "hidden" // Hide editor completely on mobile when console is open
+                ? "hidden"
                 : "flex-1"
           } min-h-0 overflow-hidden`}
         >
-          <MonacoEditor value={code} onChange={handleCodeChange} />
+          <MonacoEditor
+            value={code}
+            onChange={handleCodeChange}
+            onMount={handleEditorMount}
+            virtualKeyboardActive={showVirtualKeyboard}
+          />
         </div>
 
         <div
@@ -170,7 +229,7 @@ print(saudacao("Desenvolvedor"))
             isConsoleCollapsed
               ? "h-12"
               : isMobile
-                ? "flex-1" // Take full remaining height on mobile
+                ? "flex-1"
                 : "h-64"
           }`}
         >
@@ -181,6 +240,7 @@ print(saudacao("Desenvolvedor"))
           />
         </div>
       </div>
+      {showVirtualKeyboard && <VirtualKeyboard settings={settings} />}
     </div>
   )
 }
