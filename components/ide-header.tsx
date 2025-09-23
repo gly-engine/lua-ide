@@ -65,7 +65,7 @@ export function IDEHeader({
       EnhancedFileManager.markAsSaved()
       toast({
         title: t("newCodeCreated"),
-        description: "Editor limpo para novo arquivo",
+        description: t("newCodeCreatedDescription"),
       })
     })
   }
@@ -78,8 +78,8 @@ print("Olá, mundo!")
   const handleSave = (location: "localStorage" | "device", filename?: string) => {
     if (location === "localStorage" && !filename?.trim()) {
       toast({
-        title: "Nome obrigatório",
-        description: "É necessário fornecer um nome para salvar no navegador",
+        title: t("filenameRequiredTitle"),
+        description: t("filenameRequiredDescription"),
         variant: "destructive",
       })
       return
@@ -89,13 +89,13 @@ print("Olá, mundo!")
       EnhancedFileManager.saveToLocalStorage(code, filename!)
       toast({
         title: t("codeSaved"),
-        description: `"${filename}" foi salvo no navegador`,
+        description: t("codeSavedInBrowserDescription", { filename: filename! }),
       })
     } else {
       EnhancedFileManager.downloadFile(code, filename || "codigo.lua")
       toast({
-        title: "Download iniciado",
-        description: "Arquivo baixado para seu dispositivo",
+        title: t("downloadStartedTitle"),
+        description: t("downloadStartedDescription"),
       })
     }
   }
@@ -116,13 +116,13 @@ print("Olá, mundo!")
       toast({
         title: t("codeLoaded"),
         description: result.filename
-          ? `"${result.filename}" foi carregado com sucesso`
-          : "Código carregado com sucesso",
+          ? t("codeLoadedFromFile", { filename: result.filename })
+          : t("codeLoadedSuccessfully"),
       });
     } else {
       toast({
         title: t("errorLoading"),
-        description: result?.error || "Falha ao carregar o código",
+        description: result?.error || t("errorLoadingFile"),
         variant: "destructive",
       });
     }

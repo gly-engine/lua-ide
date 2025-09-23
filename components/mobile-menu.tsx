@@ -47,7 +47,7 @@ export function MobileMenu({
             <CodeXml className="w-5 h-5 text-primary" />
             <div>
               <div className="font-bold">Lua IDE</div>
-              <div className="text-sm text-muted-foreground font-normal">Menu de Ferramentas</div>
+              <div className="text-sm text-muted-foreground font-normal">{t("toolsMenu")}</div>
             </div>
           </SheetTitle>
         </SheetHeader>
@@ -56,7 +56,7 @@ export function MobileMenu({
           <div className="flex flex-col gap-3">
             {/* File Operations */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Arquivo</h3>
+              <h3 className="text-sm font-medium text-muted-foreground">{t("file")}</h3>
               <div className="space-y-1">
                 <Button variant="ghost" className="justify-start w-full h-10" onClick={() => handleAction(onNewCode)}>
                   <FileText className="w-4 h-4 mr-3" />
@@ -77,7 +77,7 @@ export function MobileMenu({
 
             {/* Edit Operations */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Editar</h3>
+              <h3 className="text-sm font-medium text-muted-foreground">{t("edit")}</h3>
               <div className="space-y-1">
                 <Button
                   variant="ghost"
@@ -106,7 +106,7 @@ export function MobileMenu({
 
             {/* Settings */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Configurações</h3>
+              <h3 className="text-sm font-medium text-muted-foreground">{t("settings")}</h3>
               <Button variant="ghost" className="justify-start w-full h-10" onClick={() => handleAction(onSettings)}>
                 <Settings className="w-4 h-4 mr-3" />
                 {t("settings")}
@@ -116,12 +116,12 @@ export function MobileMenu({
             <div className="border-t border-border" />
 
             <div className="bg-muted/50 rounded-lg p-3">
-              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">💡 Dicas para Mobile</h4>
+              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">{t("mobileTips")}</h4>
               <ul className="text-xs text-muted-foreground space-y-1.5">
-                <li>• Use dois dedos para zoom no editor</li>
-                <li>• Toque e segure para seleção</li>
-                <li>• Console em tela cheia</li>
-                <li>• Gire para mais espaço</li>
+                <li>{t("mobileTip1")}</li>
+                <li>{t("mobileTip2")}</li>
+                <li>{t("mobileTip3")}</li>
+                <li>{t("mobileTip4")}</li>
               </ul>
             </div>
           </div>

@@ -63,8 +63,8 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
     }
 
     toast({
-      title: "Configurações aplicadas",
-      description: "As alterações foram salvas e aplicadas",
+      title: t("settingsAppliedTitle"),
+      description: t("settingsAppliedDescription"),
     })
 
     onClose()
@@ -75,23 +75,23 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
     setSettings(defaultSettings)
     toast({
       title: t("settingsReset"),
-      description: "All settings have been reset to defaults",
+      description: t("settingsResetDescription"),
     })
   }
 
   const clearLocalStorage = () => {
     showConfirmation({
-      title: "Limpar dados do navegador",
+      title: t("clearBrowserDataTitle"),
       message:
-        "Tem certeza que deseja limpar todos os dados salvos? Esta ação não pode ser desfeita e todos os arquivos salvos serão perdidos.",
-      confirmText: "Limpar tudo",
-      cancelText: "Cancelar",
+        t("clearBrowserDataMessage"),
+      confirmText: t("clearAll"),
+      cancelText: t("cancel"),
       type: "danger",
       onConfirm: () => {
         EnhancedFileManager.clearAllData()
         toast({
-          title: "Dados limpos",
-          description: "Todos os dados do localStorage foram removidos",
+          title: t("dataClearedTitle"),
+          description: t("dataClearedDescription"),
         })
       },
     })
@@ -268,10 +268,10 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
 
           <div>
             <div className="flex flex-col gap-2 mb-3 md:flex-row md:items-center md:justify-between">
-              <h3 className="text-sm font-medium">Bibliotecas disponíveis</h3>
+              <h3 className="text-sm font-medium">{t("availableLibraries")}</h3>
               <Button variant="outline" size="sm" onClick={() => setShowLibraries(!showLibraries)}>
                 <Package className="w-4 h-4 mr-2" />
-                {showLibraries ? "Ocultar" : "Ver bibliotecas"}
+                {showLibraries ? t("hideLibraries") : t("showLibraries")}
               </Button>
             </div>
 
@@ -329,15 +329,15 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
           <Separator />
 
           <div>
-            <h3 className="text-sm font-medium mb-3">Gerenciamento de dados</h3>
+            <h3 className="text-sm font-medium mb-3">{t("dataManagement")}</h3>
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div>
-                <Label>Limpar dados do navegador</Label>
-                <p className="text-xs text-muted-foreground">Remove todos os arquivos salvos e configurações</p>
+                <Label>{t("clearBrowserDataLabel")}</Label>
+                <p className="text-xs text-muted-foreground">{t("clearBrowserDataDescription")}</p>
               </div>
               <Button variant="destructive" size="sm" onClick={clearLocalStorage} className="self-start">
                 <Trash2 className="w-4 h-4 mr-2" />
-                Limpar tudo
+                {t("clearAll")}
               </Button>
             </div>
           </div>
@@ -353,9 +353,9 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
             </div>
             <div className="flex gap-2 justify-end">
               <Button variant="outline" onClick={onClose}>
-                Cancelar
+                {t("cancel")}
               </Button>
-              <Button onClick={handleClose}>Aplicar e fechar</Button>
+              <Button onClick={handleClose}>{t("applyAndClose")}</Button>
             </div>
           </div>
         </div>

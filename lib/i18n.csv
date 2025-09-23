@@ -72,3 +72,41 @@ installPwa,Install IDE,Instalar IDE,Instalar IDE
 updateAvailableTitle,Update Available!,Atualização disponível!,¡Actualización disponible!
 updateAvailableDescription,A new version of the IDE is available. Click to update.,Uma nova versão da IDE está disponível. Clique para atualizar.,¡Una nueva versión del IDE está disponible! Haz clic para actualizar.
 updateButton,Update,Atualizar,Actualizar
+newCodeCreatedDescription,Editor cleared for a new file,Editor limpo para novo arquivo,Editor limpiado para un nuevo archivo
+filenameRequiredTitle,Filename required,Nome obrigatório,Nombre de archivo obligatorio
+filenameRequiredDescription,A filename is required to save to the browser,É necessário fornecer um nome para salvar no navegador,Se requiere un nombre de archivo para guardar en el navegador
+codeSavedInBrowserDescription,"{filename}" has been saved in the browser,"{filename}" foi salvo no navegador,"{filename}" ha sido guardado en el navegador
+downloadStartedTitle,Download started,Download iniciado,Descarga iniciada
+downloadStartedDescription,File downloaded to your device,Arquivo baixado para seu dispositivo,Archivo descargado a su dispositivo
+codeLoadedFromFile,"{filename}" has been loaded successfully,"{filename}" foi carregado com sucesso,"{filename}" ha sido cargado con éxito
+codeLoadedSuccessfully,Code loaded successfully,Código carregado com sucesso,Código cargado con éxito
+errorLoadingFile,Failed to load the code,Falha ao carregar o código,Error al cargar el código
+toolsMenu,Tools Menu,Menu de Ferramentas,Menú de Herramientas
+file,File,Arquivo,Archivo
+edit,Edit,Editar,Editar
+mobileTips,💡 Mobile Tips,💡 Dicas para Mobile,💡 Consejos para Móviles
+mobileTip1,• Use two fingers to zoom in the editor,• Use dois dedos para zoom no editor,• Use dos dedos para hacer zoom en el editor
+mobileTip2,• Touch and hold for selection,• Toque e segure para seleção,• Toque y mantenga presionado para seleccionar
+mobileTip3,• Full screen console,• Console em tela cheia,• Consola en pantalla completa
+mobileTip4,• Rotate for more space,• Gire para mais espaço,• Gire para más espacio
+consoleWelcome,🚀 Lua IDE - Output Console,🚀 Lua IDE - Console de Saída,🚀 Lua IDE - Consola de Salida
+clickRun,Click 'Run' to execute your Lua code,Clique em 'Rodar' para executar seu código Lua,Haga clic en 'Ejecutar' para ejecutar su código Lua
+noCodeToRun,No code to execute,Nenhum código para executar,No hay código para ejecutar
+executingCode,Executing code...,Executando código...,Ejecutando código...
+executionError,Error: {error},Erro: {error},Error: {error}
+unexpectedError,Unexpected error: {error},Erro inesperado: {error},Error inesperado: {error}
+settingsAppliedTitle,Settings applied,Configurações aplicadas,Configuraciones aplicadas
+settingsAppliedDescription,Changes have been saved and applied,As alterações foram salvas e aplicadas,Los cambios han sido guardados y aplicados
+settingsResetDescription,All settings have been reset to defaults,Todas as configurações foram redefinidas para os padrões,Todas las configuraciones se han restablecido a los valores predeterminados
+clearBrowserDataTitle,Clear browser data,Limpar dados do navegador,Limpiar datos del navegador
+clearBrowserDataMessage,Are you sure you want to clear all saved data? This action cannot be undone and all saved files will be lost.,Tem certeza que deseja limpar todos os dados salvos? Esta ação não pode ser desfeita e todos os arquivos salvos serão perdidos.,¿Estás seguro de que quieres borrar todos los datos guardados? Esta acción no se puede deshacer y se perderán todos los archivos guardados.
+clearAll,Clear all,Limpar tudo,Limpiar todo
+dataClearedTitle,Data cleared,Dados limpos,Datos limpiados
+dataClearedDescription,All data from localStorage has been removed,Todos os dados do localStorage foram removidos,Todos los datos de localStorage han sido eliminados
+availableLibraries,Available Libraries,Bibliotecas disponíveis,Bibliotecas disponibles
+hideLibraries,Hide,Ocultar,Ocultar
+showLibraries,Show libraries,Ver bibliotecas,Ver bibliotecas
+dataManagement,Data Management,Gerenciamento de dados,Gestión de datos
+clearBrowserDataLabel,Clear browser data,Limpar dados do navegador,Limpiar datos del navegador
+clearBrowserDataDescription,Removes all saved files and settings,Remove todos os arquivos salvos e configurações,Elimina todos los archivos y configuraciones guardados
+applyAndClose,Apply and close,Aplicar e fechar,Aplicar y cerrar
