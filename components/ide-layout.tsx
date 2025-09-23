@@ -14,7 +14,7 @@ import VirtualKeyboard from "./virtual-keyboard"
 import eventBus from "@/lib/event-bus"
 import { editor } from "monaco-editor"
 
-export function IDELayout() {
+export function IDELayout({ onEditorReady }: { onEditorReady: () => void }) {
   const [code, setCode] = useState("")
   const [isConsoleCollapsed, setIsConsoleCollapsed] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
@@ -189,6 +189,7 @@ export function IDELayout() {
 
   const handleEditorMount = (editor: editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
+    onEditorReady();
   };
 
   return (

@@ -141,7 +141,6 @@ export function MonacoEditor({ value, onChange, onMount, readOnly, virtualKeyboa
           readOnly: readOnly,
           cursorStyle: "line",
         }}
-        loading={<div className="flex items-center justify-center h-full bg-muted">Carregando editor...</div>}
       />
     </div>
   )
