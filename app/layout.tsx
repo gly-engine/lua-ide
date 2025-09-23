@@ -8,10 +8,16 @@ import { ModalProvider } from "@/components/modal-system"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Gly Engine - Lua IDE",
-  description: "Modern Lua IDE powered by Monaco Editor",
-  generator: "v0.app",
+  title: "Lua IDE",
+  description: "Run and share Lua code instantly in your browser -- no login, no installs, just coding!",
 }
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  maximumScale: 1.0,
+  userScalable: "no",
+};
 
 export default function RootLayout({
   children,

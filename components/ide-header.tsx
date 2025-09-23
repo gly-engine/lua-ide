@@ -3,7 +3,14 @@
 import { Button } from "@/components/ui/button"
 import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle } from "lucide-react"
 import { useState } from "react"
-import { MobileMenu } from "./mobile-menu"
+import dynamic from "next/dynamic";
+import { MobileMenu as MobileMenuComponent } from "./mobile-menu";
+
+const MobileMenu = dynamic(() => Promise.resolve(MobileMenuComponent), {
+  ssr: false,
+  loading: () => null // Render nothing on the server while loading
+});
+
 import { EnhancedSaveDialog } from "./enhanced-save-dialog"
 import { EnhancedLoadDialog } from "./enhanced-load-dialog"
 import { ShareDialog } from "./share-dialog"
