@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { ModalProvider } from "@/components/modal-system"
+import ServiceWorkerUpdateNotification from "@/components/service-worker-update-notification";
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default function RootLayout({
             <Analytics />
           </Suspense>
         </ModalProvider>
+        <ServiceWorkerUpdateNotification />
       </body>
     </html>
   )

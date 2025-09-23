@@ -66,3 +66,9 @@ enableVirtualKeyboard,Enable virtual keyboard,Ativar teclado virtual,Activar tec
 hapticFeedback,Haptic feedback,Feedback tátil,Retroalimentación háptica
 keyboardLayout,Keyboard Layout,Layout do Teclado,Diseño del Teclado
 virtualKeyboardNotice,Notice: The virtual keyboard is only displayed on mobile devices.,Aviso: O teclado virtual só é exibido em dispositivos móveis.,Aviso: El teclado virtual solo se muestra en dispositivos móviles.
+pwa,PWA,PWA,PWA
+pwaDescription,Install this application to your device for a native-like experience.,Instale este aplicativo no seu dispositivo para uma experiência semelhante à nativa.,Instala esta aplicación en tu dispositivo para una experiencia similar a la nativa.
+installPwa,Install IDE,Instalar IDE,Instalar IDE
+updateAvailableTitle,Update Available!,Atualização disponível!,¡Actualización disponible!
+updateAvailableDescription,A new version of the IDE is available. Click to update.,Uma nova versão da IDE está disponível. Clique para atualizar.,¡Una nueva versión del IDE está disponible! Haz clic para actualizar.
+updateButton,Update,Atualizar,Actualizar

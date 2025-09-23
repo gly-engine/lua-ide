@@ -12,6 +12,7 @@ import { SettingsManager, EDITOR_THEMES, type IDESettings } from "@/lib/settings
 import { useTranslation } from "@/lib/i18n"
 import { useToast } from "@/hooks/use-toast"
 import { useMobile } from "@/hooks/use-mobile"
+import { usePwaInstall } from "@/hooks/use-pwa-install"
 import { Settings, RotateCcw, Trash2, Package, ExternalLink } from "lucide-react"
 import { EnhancedFileManager } from "@/lib/enhanced-file-manager"
 import { useConfirmation } from "./confirmation-modal"
@@ -31,6 +32,7 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
   const { toast } = useToast()
   const { showConfirmation } = useConfirmation()
   const isMobile = useMobile()
+  const { isInstallable, promptInstall } = usePwaInstall()
 
   const showFontSizeWarning = isMobile && settings.fontSize < 16 && !settings.keyboard.enabled;
 
@@ -305,6 +307,22 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                   ))}
                 </div>
               </ScrollArea>
+            )}
+          </div>
+
+          <Separator />
+
+          {/* PWA Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-3">{t("pwa")}
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              {t("pwaDescription")}
+            </p>
+            {isInstallable && (
+              <Button onClick={promptInstall} className="w-full">
+                {t("installPwa")}
+              </Button>
             )}
           </div>
 
