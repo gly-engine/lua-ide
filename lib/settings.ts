@@ -13,7 +13,7 @@ export interface IDESettings {
   keyboard: {
     enabled: boolean
     hapticFeedback: boolean
-    layout: "ansi" | "abnt2"
+    layout: "ansi" | "compact"
     theme: string
   }
 }
@@ -29,9 +29,9 @@ export const DEFAULT_SETTINGS: IDESettings = {
   minimap: false,
   lineNumbers: "on",
   keyboard: {
-    enabled: false,
+    enabled: true,
     hapticFeedback: true,
-    layout: "ansi",
+    layout: "compact",
     theme: "hg-theme-default",
   },
 }

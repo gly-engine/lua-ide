@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Keyboard, { KeyboardReactInterface } from 'react-simple-keyboard';
 import 'simple-keyboard/build/css/index.css';
-import { ansiLayout, abnt2Layout } from '@/lib/keyboard-layouts';
+import { ansiLayout, compactLayout } from '@/lib/keyboard-layouts';
 import { IDESettings } from '@/lib/settings';
 import eventBus from '@/lib/event-bus';
 import { useTheme } from '@/components/theme-provider';
@@ -17,7 +17,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({ settings }) => {
 
   const layouts = {
     ansi: ansiLayout,
-    abnt2: abnt2Layout,
+    compact: compactLayout,
   };
 
   const handleKeyPress = (button: string) => {
@@ -45,7 +45,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({ settings }) => {
         onKeyPress={handleKeyPress}
         theme={keyboardTheme}
         display={{
-          '{bksp}': 'return',
+          '{bksp}': '⌫',
           '{enter}': 'enter',
           '{shift}': '⇧',
           '{lock}': '⇪',

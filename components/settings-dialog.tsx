@@ -253,8 +253,8 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="compact">Compact</SelectItem>
                     <SelectItem value="ansi">ANSI</SelectItem>
-                    <SelectItem value="abnt2">ABNT2</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
