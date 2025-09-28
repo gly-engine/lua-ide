@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { FileText, Save, FolderOpen, Undo2, Redo2, Settings, Code2 } from "lucide-react"
+import { FileText, Save, FolderOpen, Undo2, Redo2, Settings, CodeXml } from "lucide-react"
 import { useTheme } from "./theme-provider"
 import { useTranslation } from "@/lib/i18n"
 
@@ -44,10 +44,10 @@ export function MobileMenu({
       <SheetContent side="right" className="w-full sm:w-80 p-0 flex flex-col m-0 max-w-none border-0 rounded-none">
         <SheetHeader className="px-3 py-3 border-b border-border">
           <SheetTitle className="flex items-center gap-2 text-left">
-            <Code2 className="w-5 h-5" />
+            <CodeXml className="w-5 h-5 text-primary" />
             <div>
-              <div className="font-bold">GlyEngine Gly IDE</div>
-              <div className="text-sm text-muted-foreground font-normal">Menu de Ferramentas</div>
+              <div className="font-bold">Lua IDE</div>
+              <div className="text-sm text-muted-foreground font-normal">{t("toolsMenu")}</div>
             </div>
           </SheetTitle>
         </SheetHeader>
@@ -56,7 +56,7 @@ export function MobileMenu({
           <div className="flex flex-col gap-3">
             {/* File Operations */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Arquivo</h3>
+              <h3 className="text-sm font-medium text-muted-foreground">{t("file")}</h3>
               <div className="space-y-1">
                 <Button variant="ghost" className="justify-start w-full h-10" onClick={() => handleAction(onNewCode)}>
                   <FileText className="w-4 h-4 mr-3" />
@@ -77,7 +77,7 @@ export function MobileMenu({
 
             {/* Edit Operations */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Editar</h3>
+              <h3 className="text-sm font-medium text-muted-foreground">{t("edit")}</h3>
               <div className="space-y-1">
                 <Button
                   variant="ghost"
@@ -106,7 +106,7 @@ export function MobileMenu({
 
             {/* Settings */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Configurações</h3>
+              <h3 className="text-sm font-medium text-muted-foreground">{t("settings")}</h3>
               <Button variant="ghost" className="justify-start w-full h-10" onClick={() => handleAction(onSettings)}>
                 <Settings className="w-4 h-4 mr-3" />
                 {t("settings")}
@@ -116,12 +116,12 @@ export function MobileMenu({
             <div className="border-t border-border" />
 
             <div className="bg-muted/50 rounded-lg p-3">
-              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">💡 Dicas para Mobile</h4>
+              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">{t("mobileTips")}</h4>
               <ul className="text-xs text-muted-foreground space-y-1.5">
-                <li>• Use dois dedos para zoom no editor</li>
-                <li>• Toque e segure para seleção</li>
-                <li>• Console em tela cheia</li>
-                <li>• Gire para mais espaço</li>
+                <li>{t("mobileTip1")}</li>
+                <li>{t("mobileTip2")}</li>
+                <li>{t("mobileTip3")}</li>
+                <li>{t("mobileTip4")}</li>
               </ul>
             </div>
           </div>

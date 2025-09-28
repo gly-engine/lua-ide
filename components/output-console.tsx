@@ -28,12 +28,12 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
   const [output, setOutput] = useState<OutputLine[]>([
     {
       type: "system",
-      content: "🚀 Gly Engine Lua IDE - Console de Saída",
+      content: t("consoleWelcome"),
       timestamp: new Date(),
     },
     {
       type: "system",
-      content: "Clique em 'Rodar' para executar seu código Lua",
+      content: t("clickRun"),
       timestamp: new Date(),
     },
   ])
@@ -94,19 +94,19 @@ export function OutputConsole({ currentCode = "", isCollapsed = false, onToggleC
 
   const executeCurrentCode = async () => {
     if (!currentCode.trim()) {
-      addOutput("Nenhum código para executar", "error")
+      addOutput(t("noCodeToRun"), "error")
       return
     }
 
-    addOutput("Executando código...", "system")
+    addOutput(t("executingCode"), "system")
 
     try {
       const result = await wasmoonInterpreter.executeCode(currentCode)
       if (!result.success && result.error) {
-        addOutput(`Erro: ${result.error}`, "error")
+        addOutput(t("executionError", { error: result.error }), "error")
       }
     } catch (error) {
-      addOutput(`Erro inesperado: ${error}`, "error")
+      addOutput(t("unexpectedError", { error: String(error) }), "error")
     }
   }
 

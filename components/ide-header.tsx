@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle } from "lucide-react"
+import { Play, Share2, FileText, Save, FolderOpen, Undo2, Redo2, Settings, Menu, StopCircle, CodeXml } from "lucide-react"
 import { useState } from "react"
 import dynamic from "next/dynamic";
 import { MobileMenu as MobileMenuComponent } from "./mobile-menu";
@@ -65,7 +65,7 @@ export function IDEHeader({
       EnhancedFileManager.markAsSaved()
       toast({
         title: t("newCodeCreated"),
-        description: "Editor limpo para novo arquivo",
+        description: t("newCodeCreatedDescription"),
       })
     })
   }
@@ -78,8 +78,8 @@ print("Olá, mundo!")
   const handleSave = (location: "localStorage" | "device", filename?: string) => {
     if (location === "localStorage" && !filename?.trim()) {
       toast({
-        title: "Nome obrigatório",
-        description: "É necessário fornecer um nome para salvar no navegador",
+        title: t("filenameRequiredTitle"),
+        description: t("filenameRequiredDescription"),
         variant: "destructive",
       })
       return
@@ -89,13 +89,13 @@ print("Olá, mundo!")
       EnhancedFileManager.saveToLocalStorage(code, filename!)
       toast({
         title: t("codeSaved"),
-        description: `"${filename}" foi salvo no navegador`,
+        description: t("codeSavedInBrowserDescription", { filename: filename! }),
       })
     } else {
       EnhancedFileManager.downloadFile(code, filename || "codigo.lua")
       toast({
-        title: "Download iniciado",
-        description: "Arquivo baixado para seu dispositivo",
+        title: t("downloadStartedTitle"),
+        description: t("downloadStartedDescription"),
       })
     }
   }
@@ -116,13 +116,13 @@ print("Olá, mundo!")
       toast({
         title: t("codeLoaded"),
         description: result.filename
-          ? `"${result.filename}" foi carregado com sucesso`
-          : "Código carregado com sucesso",
+          ? t("codeLoadedFromFile", { filename: result.filename })
+          : t("codeLoadedSuccessfully"),
       });
     } else {
       toast({
         title: t("errorLoading"),
-        description: result?.error || "Falha ao carregar o código",
+        description: result?.error || t("errorLoadingFile"),
         variant: "destructive",
       });
     }
@@ -132,15 +132,9 @@ print("Olá, mundo!")
     <>
       <header className="border-b border-border bg-card px-2 sm:px-4 py-2 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Mobile: Space for logo */}
-            <div className="w-8 h-8 sm:hidden flex items-center justify-center">
-              {/* Space reserved for Lua logo */}
-              <div className="w-6 h-6 bg-primary/10 rounded border border-primary/20"></div>
-            </div>
-            {/* Desktop: Text logo */}
-            <div className="hidden sm:block text-xl font-bold text-primary">Gly Engine</div>
-            <div className="text-sm text-muted-foreground hidden md:block">Lua IDE</div>
+          <div className="flex items-center gap-2">
+            <CodeXml className="h-6 w-6 text-primary" />
+            <div className="text-lg font-bold text-primary">Lua IDE</div>
           </div>
 
           {/* Desktop Toolbar */}

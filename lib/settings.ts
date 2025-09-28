@@ -1,5 +1,11 @@
 "use client"
 
+import { defaultKeyboardLayout, keyboardLayouts } from "./keyboard-layouts";
+
+const keyboardLayoutIds = keyboardLayouts.map((layout) => layout.id);
+export type KeyboardLayout = (typeof keyboardLayoutIds)[number];
+
+
 export interface IDESettings {
   theme: "light" | "dark" | "system"
   editorTheme: string
@@ -13,7 +19,7 @@ export interface IDESettings {
   keyboard: {
     enabled: boolean
     hapticFeedback: boolean
-    layout: "ansi" | "abnt2"
+    layout: KeyboardLayout
     theme: string
   }
 }
@@ -29,9 +35,9 @@ export const DEFAULT_SETTINGS: IDESettings = {
   minimap: false,
   lineNumbers: "on",
   keyboard: {
-    enabled: false,
+    enabled: true,
     hapticFeedback: true,
-    layout: "ansi",
+    layout: defaultKeyboardLayout,
     theme: "hg-theme-default",
   },
 }

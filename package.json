@@ -1,11 +1,11 @@
 {
   "name": "@gamely/lua-ide",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "serve out"
+    "start": "npx local-web-server --directory ./out --rewrite '/lua-ide/(.*) -> /$1' --port 3000"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -75,9 +75,9 @@
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "local-web-server": "^5.4.0",
     "postcss": "^8.5",
     "raw-loader": "^4.0.2",
-    "serve": "^14.2.5",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",
     "typescript": "^5"

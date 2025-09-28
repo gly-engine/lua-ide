@@ -72,18 +72,26 @@ export function MonacoEditor({ value, onChange, onMount, readOnly, virtualKeyboa
   const { actualTheme, settings } = useTheme()
   const monaco = useMonaco()
   const editorContainerRef = useRef<HTMLDivElement>(null)
+  const loadedThemes = useRef(new Set())
 
   useEffect(() => {
-    if (monaco) {
-      const defineThemesPromises = Object.entries(themes).map(([themeName, importTheme]) => {
-        return importTheme().then(themeData => {
-          monaco.editor.defineTheme(themeName, themeData as any)
-        })
-      })
+    if (monaco && settings.editorTheme) {
+      const themeName = settings.editorTheme
+      if (loadedThemes.current.has(themeName)) {
+        monaco.editor.setTheme(themeName)
+        return
+      }
 
-      Promise.all(defineThemesPromises).then(() => {
-        monaco.editor.setTheme(settings.editorTheme)
-      })
+      const themeLoader = themes[themeName as keyof typeof themes]
+      if (themeLoader) {
+        themeLoader().then(themeData => {
+          monaco.editor.defineTheme(themeName, themeData as any)
+          loadedThemes.current.add(themeName)
+          monaco.editor.setTheme(themeName)
+        })
+      } else {
+        monaco.editor.setTheme(themeName)
+      }
     }
   }, [monaco, settings.editorTheme])
 
@@ -133,7 +141,6 @@ export function MonacoEditor({ value, onChange, onMount, readOnly, virtualKeyboa
           readOnly: readOnly,
           cursorStyle: "line",
         }}
-        loading={<div className="flex items-center justify-center h-full bg-muted">Carregando editor...</div>}
       />
     </div>
   )

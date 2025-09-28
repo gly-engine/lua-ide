@@ -185,3 +185,20 @@
     }
   }
 }
+
+/* Custom styles for react-simple-keyboard dark theme */
+.hg-theme-default.hg-theme-dark {
+  background-color: var(--background);
+}
+
+.hg-theme-default.hg-theme-dark .hg-button {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border-bottom: 2px solid var(--border);
+}
+
+.hg-theme-default.hg-theme-dark .hg-button:active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+

@@ -2,25 +2,96 @@
   "name": "Lua IDE",
   "short_name": "LuaIDE",
   "description": "An online Lua IDE for coding and learning.",
-  "start_url": "/",
+  "start_url": "/lua-ide/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#000080",
+  "theme_color": "#000080",
+  "scope": "/lua-ide/",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/placeholder-logo.png",
+      "src": "/lua-ide/logo-48x48.png",
+      "sizes": "48x48",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-72x72.png",
+      "sizes": "72x72",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-96x96.png",
+      "sizes": "96x96",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-144x144.png",
+      "sizes": "144x144",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-192x192.png",
       "sizes": "192x192",
+      "purpose": "any",
       "type": "image/png"
     },
     {
-      "src": "/placeholder-logo.png",
+      "src": "/lua-ide/logo-512x512.png",
       "sizes": "512x512",
+      "purpose": "any",
       "type": "image/png"
     },
     {
-      "src": "/placeholder-logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/lua-ide/logo-192x192.png",
+      "sizes": "192x192",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-48x48.png",
+      "sizes": "48x48",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-72x72.png",
+      "sizes": "72x72",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-96x96.png",
+      "sizes": "96x96",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-144x144.png",
+      "sizes": "144x144",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-192x192.png",
+      "sizes": "192x192",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-512x512.png",
+      "sizes": "512x512",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/lua-ide/logo-192x192.png",
+      "sizes": "192x192",
+      "purpose": "maskable",
+      "type": "image/png"
     }
   ]
 }
