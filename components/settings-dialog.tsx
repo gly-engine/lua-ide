@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Separator } from "@/components/ui/separator"
+import { keyboardLayouts } from "@/lib/keyboard-layouts"
 import { SettingsManager, EDITOR_THEMES, type IDESettings } from "@/lib/settings"
 import { useTranslation } from "@/lib/i18n"
 import { useToast } from "@/hooks/use-toast"
@@ -253,8 +254,11 @@ export function SettingsDialog({ isOpen, onClose, onSettingsChange }: SettingsDi
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="compact">Compact</SelectItem>
-                    <SelectItem value="ansi">ANSI</SelectItem>
+                    {keyboardLayouts.map((layout) => (
+                      <SelectItem key={layout.id} value={layout.id}>
+                        {layout.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

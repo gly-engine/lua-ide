@@ -1,4 +1,4 @@
-export const ansiLayout = {
+const ansiLayout = {
   default: [
     "` 1 2 3 4 5 6 7 8 9 0 - = {bksp}",
     "{tab} q w e r t y u i o p [ ] \\",
@@ -11,11 +11,11 @@ export const ansiLayout = {
     "{tab} Q W E R T Y U I O P { } |",
     '{lock} A S D F G H J K L : \" {enter}',
     "{shift} Z X C V B N M < > ?",
-    "{arrowleft} {arrowright} {space:8} {arrowup} {arrowdown}"
+    "{arrowleft} {arrowright} {space} {arrowup} {arrowdown}"
   ]
 };
 
-export const compactLayout = {
+const luaQwertLayout = {
   default: [
     "' { } [ ] ( ) . + = {bksp}",
     "1 2 3 4 5 6 7 8 9 0 {enter}",
@@ -25,7 +25,7 @@ export const compactLayout = {
     "{arrowleft} {arrowright} {space} {arrowup} {arrowdown}"
   ],
   shift: [
-    "\" ! @ # $ % ^ & * ( ) _ =",
+    '\" ! @ # $ % ^ & * ( ) _ =',
     "` | : ; < > ~ / . + - {bksp}",
     "1 2 3 4 5 6 7 8 9 0 {enter}",
     "{tab} Q W E R T Y U I O P",
@@ -34,3 +34,18 @@ export const compactLayout = {
     "{arrowleft} {arrowright} {space} {arrowup} {arrowdown}"
   ]
 };
+
+export const keyboardLayouts = [
+  {
+    id: 'ansi',
+    name: 'ANSI',
+    layout: ansiLayout,
+  },
+  {
+    id: 'lua_qwert',
+    name: 'Lua QWERT',
+    layout: luaQwertLayout,
+  },
+];
+
+export const defaultKeyboardLayout = 'lua_qwert';

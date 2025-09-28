@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Keyboard, { KeyboardReactInterface } from 'react-simple-keyboard';
 import 'simple-keyboard/build/css/index.css';
-import { ansiLayout, compactLayout } from '@/lib/keyboard-layouts';
+import { keyboardLayouts } from '@/lib/keyboard-layouts';
 import { IDESettings } from '@/lib/settings';
 import eventBus from '@/lib/event-bus';
 import { useTheme } from '@/components/theme-provider';
@@ -15,10 +15,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({ settings }) => {
   const keyboard = useRef<KeyboardReactInterface['keyboard']>();
   const { actualTheme } = useTheme();
 
-  const layouts = {
-    ansi: ansiLayout,
-    compact: compactLayout,
-  };
+  const selectedLayout = keyboardLayouts.find(l => l.id === settings.keyboard.layout)?.layout || keyboardLayouts[0].layout;
 
   const handleKeyPress = (button: string) => {
     if (settings.keyboard.hapticFeedback) {
@@ -41,7 +38,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({ settings }) => {
       <Keyboard
         keyboardRef={r => (keyboard.current = r)}
         layoutName={layoutName}
-        layout={layouts[settings.keyboard.layout]}
+        layout={selectedLayout}
         onKeyPress={handleKeyPress}
         theme={keyboardTheme}
         display={{
